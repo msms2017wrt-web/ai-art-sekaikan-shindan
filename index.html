@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIアート世界観診断</title>
+  <style>
+    /* ===== BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --radius: 16px;
+      --shadow: 0 8px 32px rgba(0,0,0,.10);
+      --transition: .35s cubic-bezier(.4,0,.2,1);
+    }
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', 'Yu Gothic', sans-serif;
+      background: #f5f0eb;
+      color: #2d2d2d;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 60px;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      padding: 18px 24px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: #3a3a3a;
+    }
+    header h1 span { color: #b07d62; }
+
+    /* ===== PROGRESS ===== */
+    #progress-wrap {
+      width: 100%;
+      height: 5px;
+      background: #e8e0d8;
+    }
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b07d62);
+      transition: width .5s ease;
+      width: 0%;
+    }
+
+    /* ===== MAIN CONTAINER ===== */
+    .container {
+      width: 100%;
+      max-width: 640px;
+      padding: 0 20px;
+    }
+
+    /* ===== SCREENS ===== */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ===== INTRO SCREEN ===== */
+    #screen-intro {
+      text-align: center;
+      padding-top: 48px;
+    }
+    .intro-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #d4a574, #b07d62);
+      color: #fff;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .intro-title {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.3;
+      color: #2d2d2d;
+      margin-bottom: 8px;
+    }
+    .intro-title .en {
+      font-size: .95rem;
+      font-weight: 400;
+      color: #999;
+      letter-spacing: .2em;
+      display: block;
+      margin-top: 4px;
+    }
+    .intro-desc {
+      font-size: .95rem;
+      color: #666;
+      line-height: 1.9;
+      margin: 28px 0 40px;
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .type-preview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+    .type-chip {
+      padding: 8px 4px;
+      border-radius: 10px;
+      font-size: .72rem;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(135deg, #d4a574, #b07d62);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 16px 48px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(176,125,98,.4);
+      transition: var(--transition);
+      letter-spacing: .05em;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(176,125,98,.5); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ===== INSTRUCTION SCREEN ===== */
+    #screen-instruction {
+      padding-top: 40px;
+      text-align: center;
+    }
+    .inst-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    .scale-demo {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
+    .scale-demo p {
+      font-size: .9rem;
+      color: #555;
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .scale-labels span { font-size: .72rem; color: #999; }
+    .scale-row {
+      display: flex;
+      gap: 8px;
+    }
+    .scale-row .dot {
+      flex: 1;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: #e8e0d8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #999;
+    }
+
+    /* ===== QUIZ SCREEN ===== */
+    #screen-quiz { padding-top: 32px; }
+    .quiz-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .quiz-step {
+      font-size: .82rem;
+      color: #999;
+      font-weight: 600;
+    }
+    .type-tag {
+      font-size: .78rem;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 100px;
+      color: #fff;
+    }
+    .quiz-section-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+    .quiz-section-title .type-en {
+      font-size: .85rem;
+      font-weight: 400;
+      color: #999;
+      display: block;
+      letter-spacing: .15em;
+      margin-bottom: 4px;
+    }
+    .question-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .question-text {
+      font-size: .95rem;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      color: #2d2d2d;
+    }
+    .q-num {
+      font-size: .72rem;
+      font-weight: 700;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
+    .rating-row {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+    .rating-btn {
+      flex: 1;
+      aspect-ratio: 1;
+      max-width: 52px;
+      border-radius: 50%;
+      border: 2px solid #e8e0d8;
+      background: #fafafa;
+      font-size: .9rem;
+      font-weight: 700;
+      color: #bbb;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .rating-btn:hover {
+      border-color: var(--type-color, #b07d62);
+      color: var(--type-color, #b07d62);
+      transform: scale(1.08);
+    }
+    .rating-btn.selected {
+      background: var(--type-color, #b07d62);
+      border-color: var(--type-color, #b07d62);
+      color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--type-color, #b07d62) 40%, transparent);
+    }
+    .scale-hint {
+      display: flex;
+      justify-content: space-between;
+      font-size: .68rem;
+      color: #bbb;
+      padding: 0 4px;
+      margin-top: 6px;
+    }
+    .nav-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .btn-back {
+      flex: 0 0 auto;
+      background: #fff;
+      border: 2px solid #e8e0d8;
+      color: #999;
+      font-size: .95rem;
+      font-weight: 700;
+      padding: 14px 24px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-back:hover { border-color: #ccc; color: #666; }
+    .btn-next {
+      flex: 1;
+      background: linear-gradient(135deg, var(--type-color, #d4a574), color-mix(in srgb, var(--type-color, #b07d62) 80%, #000));
+      color: #fff;
+      font-size: .95rem;
+      font-weight: 700;
+      padding: 14px 24px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 16px color-mix(in srgb, var(--type-color, #b07d62) 35%, transparent);
+    }
+    .btn-next:hover { transform: translateY(-2px); }
+    .btn-next:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+    /* ===== CALCULATING SCREEN ===== */
+    #screen-calc {
+      text-align: center;
+      padding-top: 120px;
+    }
+    .calc-spinner {
+      width: 64px;
+      height: 64px;
+      border: 5px solid #e8e0d8;
+      border-top-color: #b07d62;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 28px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #screen-calc p { font-size: 1.1rem; color: #888; }
+
+    /* ===== RESULT SCREEN ===== */
+    #screen-result { padding-top: 36px; }
+    .result-header {
+      background: linear-gradient(135deg, var(--result-bg1, #d4a574), var(--result-bg2, #b07d62));
+      border-radius: var(--radius);
+      padding: 36px 24px;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .result-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .result-label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      opacity: .85;
+      margin-bottom: 10px;
+    }
+    .result-type-num {
+      font-size: 1rem;
+      opacity: .8;
+      margin-bottom: 4px;
+    }
+    .result-type-name {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    .result-type-jp {
+      font-size: .95rem;
+      opacity: .9;
+      margin-top: 4px;
+    }
+    .result-score {
+      font-size: .82rem;
+      opacity: .75;
+      margin-top: 12px;
+    }
+    .result-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .result-card h3 {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--result-accent, #b07d62);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .result-card h3::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #f0ebe4;
+    }
+    .result-description {
+      font-size: .95rem;
+      line-height: 2;
+      color: #444;
+    }
+    .keyword-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .keyword-chip {
+      background: color-mix(in srgb, var(--result-accent, #b07d62) 12%, white);
+      color: var(--result-accent, #b07d62);
+      font-size: .8rem;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 100px;
+      border: 1.5px solid color-mix(in srgb, var(--result-accent, #b07d62) 25%, white);
+    }
+    .color-swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .color-swatch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .82rem;
+      color: #555;
+    }
+    .swatch-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,.12);
+    }
+    .motif-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .motif-chip {
+      background: #fafafa;
+      border: 1.5px solid #e8e0d8;
+      color: #666;
+      font-size: .82rem;
+      padding: 6px 14px;
+      border-radius: 100px;
+    }
+    .suitable-list {
+      list-style: none;
+    }
+    .suitable-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid #f0ebe4;
+      font-size: .9rem;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .suitable-list li:last-child { border-bottom: none; }
+    .suitable-list li::before {
+      content: '✦';
+      color: var(--result-accent, #b07d62);
+      font-size: .7rem;
+      flex-shrink: 0;
+    }
+    .result-map {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .map-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .map-area {
+      border-radius: 10px;
+      padding: 12px;
+      font-size: .78rem;
+    }
+    .map-area-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: .72rem;
+      letter-spacing: .08em;
+    }
+    .map-type-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .map-type-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .75rem;
+      color: #555;
+    }
+    .map-type-item.highlight {
+      font-weight: 700;
+      color: #2d2d2d;
+    }
+    .map-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .scores-section {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .score-label {
+      font-size: .78rem;
+      color: #666;
+      flex: 0 0 130px;
+      line-height: 1.3;
+    }
+    .score-bar-wrap {
+      flex: 1;
+      background: #f0ebe4;
+      border-radius: 100px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1s ease;
+    }
+    .score-num {
+      font-size: .78rem;
+      font-weight: 700;
+      color: #888;
+      flex: 0 0 28px;
+      text-align: right;
+    }
+    .retry-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #fff;
+      border: 2px solid #e8e0d8;
+      color: #888;
+      font-size: .9rem;
+      font-weight: 700;
+      padding: 14px 24px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 8px;
+    }
+    .retry-btn:hover { border-color: #b07d62; color: #b07d62; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in { animation: fadeUp .5s ease forwards; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 380px) {
+      .rating-btn { max-width: 44px; }
+      .result-type-name { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>AI<span>アート</span> 世界観診断</h1>
+</header>
+<div id="progress-wrap">
+  <div id="progress-bar"></div>
+</div>
+
+<div class="container">
+
+  <!-- ① INTRO SCREEN -->
+  <div id="screen-intro" class="screen active animate-in">
+    <div class="intro-badge">Be Yourself</div>
+    <div class="intro-title">
+      あなたの創作世界観タイプを見つけよう
+      <span class="en">AI Art World-View Diagnosis</span>
+    </div>
+    <div class="intro-desc">
+      あなたの"創作の世界観"には、自然と表れる個性があります。<br>
+      この診断では、いくつかの質問に答えることで<br>
+      <strong>あなたのAIアートの世界観タイプ</strong>を発見できます。<br><br>
+      全12タイプ × 各4問、合計48問です。<br>
+      直感で答えてみてください。
+    </div>
+    <div class="type-preview" id="type-preview"></div>
+    <button class="btn-primary" onclick="showInstruction()">診断をはじめる</button>
+  </div>
+
+  <!-- ② INSTRUCTION SCREEN -->
+  <div id="screen-instruction" class="screen">
+    <div class="inst-title">回答のルール</div>
+    <div class="scale-demo">
+      <p>各質問に対して、<strong>1〜5</strong> で直感的に答えてください。</p>
+      <div class="scale-labels">
+        <span>まったく<br>そう思わない</span>
+        <span>とても<br>そう思う</span>
+      </div>
+      <div class="scale-row">
+        <div class="dot">1</div>
+        <div class="dot">2</div>
+        <div class="dot">3</div>
+        <div class="dot">4</div>
+        <div class="dot">5</div>
+      </div>
+      <div class="scale-labels" style="margin-top:10px">
+        <span>1 = まったくそう思わない</span>
+        <span style="text-align:right">5 = とてもそう思う</span>
+      </div>
+    </div>
+    <p style="font-size:.85rem;color:#888;margin-bottom:28px;line-height:1.8;text-align:center">
+      最後に一番スコアが高いタイプが<br>あなたの世界観タイプとして表示されます。<br>
+      同点の場合は両タイプの要素を持っています。
+    </p>
+    <button class="btn-primary" onclick="startQuiz()">スタート！</button>
+  </div>
+
+  <!-- ③ QUIZ SCREEN -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-meta">
+      <span class="quiz-step" id="quiz-step"></span>
+      <span class="type-tag" id="type-tag"></span>
+    </div>
+    <div class="quiz-section-title" id="section-title"></div>
+    <div id="questions-wrap"></div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection()" id="btn-back">◀ 戻る</button>
+      <button class="btn-next" onclick="nextSection()" id="btn-next">次へ ▶</button>
+    </div>
+  </div>
+
+  <!-- ④ CALCULATING SCREEN -->
+  <div id="screen-calc" class="screen">
+    <div class="calc-spinner"></div>
+    <p>診断中…</p>
+  </div>
+
+  <!-- ⑤ RESULT SCREEN -->
+  <div id="screen-result" class="screen"></div>
+
+</div>
+
+<script>
+/* =============================================
+   DATA
+   ============================================= */
+const TYPES = [
+  {
+    id: 0,
+    num: '①',
+    en: 'Pure Light World',
+    jp: 'ピュアライト（純粋な光）',
+    color1: '#f4c7b0',
+    color2: '#e8956d',
+    accent: '#c97a50',
+    questions: [
+      '優しく穏やかな世界観の作品に惹かれる。',
+      '強いインパクトよりも、柔らかい光の表現が好き。',
+      '見る人の心が癒されるような作品を作りたい。',
+      '花・光・空など優しいモチーフに魅力を感じる。',
+    ],
+    description:
+      'あなたは、優しく透明感のある世界観を持つクリエイターです。派手な表現よりも、柔らかな光や穏やかな空気感を大切にします。あなたの作品には見る人の心を落ち着かせ、安心や癒しを届ける力があります。このタイプの人は「優しさ」「静けさ」「純粋さ」を感じる世界観を自然と表現します。',
+    keywords: ['癒し', '光', '透明感', 'やさしさ', '穏やかさ'],
+    colors: [
+      { name: 'ミルクホワイト', hex: '#fefefe' },
+      { name: 'ペールピンク', hex: '#f9d5e5' },
+      { name: 'ラベンダー', hex: '#d6c6e1' },
+      { name: 'パールベージュ', hex: '#f0e6d3' },
+    ],
+    motifs: ['花', '光', '空', '羽', '柔らかな雲'],
+    strength: '見る人の心を癒す力を持っています。安心感のある作品は、多くの人にとって「心が落ち着く場所」になります。その感性はとても価値のある才能です。',
+    suitable: ['ヒーリング系アート', '癒し系ブランド', '女性向けデザイン', 'スピリチュアル系ビジュアル'],
+    mapArea: '幻想 / ファンタジー',
+  },
+  {
+    id: 1,
+    num: '②',
+    en: 'Wisdom Garden',
+    jp: 'ウィズダムガーデン（知性と調和の庭）',
+    color1: '#a8c8a0',
+    color2: '#5a8a52',
+    accent: '#4a7a44',
+    questions: [
+      '作品にはストーリーや意味がある方が魅力を感じる。',
+      '本や知識、哲学など知的なテーマの表現が好き。',
+      '美しいだけでなく、メッセージ性のある作品に惹かれる。',
+      '見る人に気づきや学びを与える作品を作りたいと思う。',
+    ],
+    description:
+      'あなたは、知性と物語を感じさせる世界観を持つクリエイターです。美しいビジュアルだけでなく、意味やメッセージを感じる作品に魅力を感じます。あなたの作品には静かな深みや知的な雰囲気があり、見る人に新しい視点や気づきを与える力があります。このタイプの人は「知識」「物語」「哲学」など内面の世界を表現することが得意です。',
+    keywords: ['知性', '物語', '学び', '深み', '静けさ'],
+    colors: [
+      { name: 'セージグリーン', hex: '#8fbc8f' },
+      { name: 'アンティークブラウン', hex: '#8b6347' },
+      { name: 'アイボリー', hex: '#fffff0' },
+      { name: 'ディープグリーン', hex: '#2d5a27' },
+    ],
+    motifs: ['本', '図書館', '植物', '庭園', 'アンティーク小物'],
+    strength: '静かな深みと知的な魅力があります。ただ美しいだけではなく、見る人が「意味」を感じられる作品は長く心に残る力を持っています。世界観を深く作り込むことができる才能です。',
+    suitable: ['ストーリー性のあるアート', '知的ブランドのビジュアル', '書籍・教育コンテンツ', '世界観デザイン'],
+    mapArea: '現実 / ライフスタイル',
+  },
+  {
+    id: 2,
+    num: '③',
+    en: 'Free Horizon',
+    jp: 'フリーホライズン（自由な地平線）',
+    color1: '#87ceeb',
+    color2: '#4a9ec8',
+    accent: '#2e7daa',
+    questions: [
+      '広い空や海など、開放感のある景色に惹かれる。',
+      '自由でのびやかな世界観の作品が好き。',
+      '旅や冒険を感じるようなテーマに魅力を感じる。',
+      '枠にとらわれない自由な表現をしたいと思う。',
+    ],
+    description:
+      'あなたは、自由と広がりを感じる世界観を持つクリエイターです。固定されたスタイルよりも、新しい発想や自由な表現に魅力を感じます。広い空や自然の風景、旅や冒険を感じるテーマに惹かれることが多く、あなたの作品には開放感と希望があります。このタイプの人は「自由」「探求」「可能性」をテーマに新しい世界を表現することが得意です。',
+    keywords: ['自由', '冒険', '広がり', '探求', '可能性'],
+    colors: [
+      { name: 'スカイブルー', hex: '#87ceeb' },
+      { name: 'サンドベージュ', hex: '#f5deb3' },
+      { name: 'ライトグレー', hex: '#d3d3d3' },
+      { name: 'サンセットオレンジ', hex: '#fd8c5a' },
+    ],
+    motifs: ['空', '海', '山', '旅', '地平線'],
+    strength: '広がりと自由なエネルギーがあります。あなたの作品を見る人は「新しい世界へ旅に出るような感覚」を感じます。この感性は、人の心を軽くし前向きな気持ちを生み出す力を持っています。',
+    suitable: ['旅・自然系ビジュアル', 'ライフスタイルブランド', '自由な世界観アート', 'ストーリー性のある作品'],
+    mapArea: '現実 / ライフスタイル',
+  },
+  {
+    id: 3,
+    num: '④',
+    en: 'Dark Edge',
+    jp: 'ダークエッジ（鋭さと影の美）',
+    color1: '#555555',
+    color2: '#1a1a2e',
+    accent: '#8b5cf6',
+    questions: [
+      '少しダークでミステリアスな世界観に惹かれる。',
+      '一般的な美しさより、個性的な表現が好き。',
+      '強い印象を残すような作品に魅力を感じる。',
+      '他の人とは違う世界観を表現したいと思う。',
+    ],
+    description:
+      'あなたは、強い個性と印象的な世界観を持つクリエイターです。一般的な「美しい」だけの表現よりも、少しダークでミステリアスな雰囲気に魅力を感じます。あなたの作品には独特の存在感や緊張感があり、見る人の印象に強く残る力があります。このタイプの人は「影」「対比」「個性」などを使いながら独自の世界観を作ることが得意です。',
+    keywords: ['個性', 'ミステリアス', 'コントラスト', '強さ', '印象'],
+    colors: [
+      { name: 'ディープブラック', hex: '#1a1a1a' },
+      { name: 'ダークパープル', hex: '#4a0080' },
+      { name: 'ワインレッド', hex: '#722f37' },
+      { name: 'スモークグレー', hex: '#6b7280' },
+    ],
+    motifs: ['影', '夜', '都市', '月', '霧'],
+    strength: '人の記憶に残る強い魅力があります。他の人と同じ表現ではなく、あなたにしか作れない個性が自然と表れます。アートとしての存在感を生み出す大きな才能です。',
+    suitable: ['アート系ビジュアル', 'ファンタジー作品', '世界観重視のブランド', '個性派デザイン'],
+    mapArea: '幻想 / ファンタジー',
+  },
+  {
+    id: 4,
+    num: '⑤',
+    en: 'Mystic Aura',
+    jp: 'ミスティックオーラ（神秘的な気配）',
+    color1: '#9b59b6',
+    color2: '#4a0080',
+    accent: '#7c3aed',
+    questions: [
+      '宇宙・星・月など神秘的なテーマに惹かれる。',
+      '幻想的で魔法のような世界観にワクワクする。',
+      '現実ではありえないような表現を見ると楽しい。',
+      '神秘的な雰囲気の作品を作りたいと思う。',
+    ],
+    description:
+      'あなたは、神秘的で幻想的な世界観を持つクリエイターです。現実の世界だけでなく、宇宙やエネルギー、見えない力など神秘的なテーマに惹かれることが多いでしょう。あなたの作品には不思議な魅力や奥行きがあり、見る人の想像力を広げる力があります。このタイプの人は「宇宙」「光」「神秘」などをテーマに幻想的な世界観を表現することが得意です。',
+    keywords: ['神秘', '幻想', '宇宙', '光', '直感'],
+    colors: [
+      { name: 'ミッドナイトネイビー', hex: '#191970' },
+      { name: 'ディープパープル', hex: '#4a0080' },
+      { name: 'シルバー', hex: '#c0c0c0' },
+      { name: 'ラベンダー', hex: '#d6c6e1' },
+    ],
+    motifs: ['月', '星', '宇宙', '光の粒', '魔法'],
+    strength: '人を惹きつける神秘的な魅力があります。幻想的な表現は、見る人の想像力を刺激し夢の世界へと引き込む力を持っています。独特で印象に残る世界観を作る才能です。',
+    suitable: ['スピリチュアル系ビジュアル', 'オラクルカード・占い関連', '幻想アート', 'ヒーリング系ブランド'],
+    mapArea: '幻想 / ファンタジー',
+  },
+  {
+    id: 5,
+    num: '⑥',
+    en: 'Brave Spark',
+    jp: 'ブレイブスパーク（情熱と閃き）',
+    color1: '#e74c3c',
+    color2: '#c0392b',
+    accent: '#dc2626',
+    questions: [
+      '力強さやエネルギーを感じる作品が好き。',
+      '見る人を勇気づけるような表現に惹かれる。',
+      '挑戦や成長をテーマにした世界観が好き。',
+      '情熱やパワーを感じるビジュアルに魅力を感じる。',
+    ],
+    description:
+      'あなたは、情熱とエネルギーを感じさせる世界観を持つクリエイターです。静かな表現よりも、見る人の心を動かすような力強いビジュアルに惹かれる傾向があります。あなたの作品には前向きなパワーや勢いがあり、見る人に勇気や活力を与える力があります。このタイプの人は「挑戦」「情熱」「エネルギー」などをテーマに力強い世界観を表現することが得意です。',
+    keywords: ['情熱', '挑戦', '勇気', 'エネルギー', '前進'],
+    colors: [
+      { name: 'ディープレッド', hex: '#8b0000' },
+      { name: 'サンセットオレンジ', hex: '#fd8c5a' },
+      { name: 'ダークネイビー', hex: '#1e3a5f' },
+      { name: 'ゴールド', hex: '#ffd700' },
+    ],
+    motifs: ['炎', '光', '稲妻', '太陽', '力強い風景'],
+    strength: '人の心を動かすエネルギーがあります。力強いビジュアルは見る人の気持ちを前向きにし、勇気や希望を生み出す力を持っています。人に影響を与える作品を生み出す才能です。',
+    suitable: ['モチベーション系ビジュアル', '力強い世界観のアート', 'ストーリー性のある作品', 'ブランドビジュアル'],
+    mapArea: 'エネルギー',
+  },
+  {
+    id: 6,
+    num: '⑦',
+    en: 'Romantic Bloom',
+    jp: 'ロマンティックブルーム（優美に咲く花）',
+    color1: '#f9a8d4',
+    color2: '#ec4899',
+    accent: '#db2777',
+    questions: [
+      'ロマンチックで美しい世界観に惹かれる。',
+      '花や柔らかい色彩の表現が好き。',
+      '優雅で美しい雰囲気の作品に魅力を感じる。',
+      '見る人の心をときめかせる作品を作りたい。',
+    ],
+    description:
+      'あなたは、優雅でロマンティックな世界観を持つクリエイターです。花や柔らかな光、美しい色彩の表現に惹かれることが多く、あなたの作品にはときめきと華やかさがあります。このタイプの人は優雅さや美しさを大切にしながら心がときめく世界観を表現することが得意です。あなたの作品は見る人の気持ちを明るくし、特別な瞬間のような感覚を届けます。',
+    keywords: ['ロマン', '優雅', '花', 'ときめき', '華やかさ'],
+    colors: [
+      { name: 'ローズピンク', hex: '#ff66b3' },
+      { name: 'ペールピンク', hex: '#ffd6e7' },
+      { name: 'クリームベージュ', hex: '#f9e4c8' },
+      { name: 'シャンパンゴールド', hex: '#f7e7ce' },
+    ],
+    motifs: ['花', '花束', 'リボン', 'ドレス', '庭園'],
+    strength: '人の心をときめかせる魅力があります。美しく優雅な表現は見る人の心を明るくし、幸せな気持ちを生み出す力を持っています。華やかで魅力的な世界観を生み出す才能です。',
+    suitable: ['女性向けブランドビジュアル', 'ロマンティック系アート', 'ウェディング系デザイン', '美容・ライフスタイル系'],
+    mapArea: '幻想 / ファンタジー',
+  },
+  {
+    id: 7,
+    num: '⑧',
+    en: 'Joyful Pop',
+    jp: 'ジョイフルポップ（明るく弾ける世界）',
+    color1: '#ff6eb4',
+    color2: '#ff1493',
+    accent: '#e91e8c',
+    questions: [
+      'カラフルで楽しい雰囲気の作品が好き。',
+      '遊び心のある表現に惹かれる。',
+      '見る人が笑顔になるような作品を作りたい。',
+      '明るくポップな世界観に魅力を感じる。',
+    ],
+    description:
+      'あなたは、明るく楽しい世界観を持つクリエイターです。カラフルな色や遊び心のある表現に惹かれ、あなたの作品には自然と元気でポジティブな雰囲気が生まれます。このタイプの人はユーモアや遊び心を大切にしながら見る人を笑顔にする世界観を表現することが得意です。あなたの作品は見る人の気持ちを軽くし、楽しい気分を届ける力を持っています。',
+    keywords: ['楽しさ', 'ポジティブ', 'カラフル', '遊び心', '元気'],
+    colors: [
+      { name: 'ビビッドピンク', hex: '#ff69b4' },
+      { name: 'レモンイエロー', hex: '#fff44f' },
+      { name: 'ターコイズブルー', hex: '#40e0d0' },
+      { name: 'ホワイト', hex: '#ffffff' },
+    ],
+    motifs: ['キャンディ', '星やハート', 'カラフルな背景', 'スイーツ'],
+    strength: '人を笑顔にする力があります。明るく楽しいビジュアルは見る人の気持ちを前向きにし、元気を与える作品になります。そのポジティブな感性は多くの人に愛される世界観を作る才能です。',
+    suitable: ['ポップ系ブランド', 'キャラクターデザイン', 'キッズ向けビジュアル', 'SNSコンテンツ'],
+    mapArea: 'エネルギー',
+  },
+  {
+    id: 8,
+    num: '⑨',
+    en: 'Warm Circle',
+    jp: 'ウォームサークル（ぬくもりとつながり）',
+    color1: '#d4956a',
+    color2: '#a0522d',
+    accent: '#92400e',
+    questions: [
+      '親しみやすく温かい雰囲気の作品が好き。',
+      '日常や暮らしを感じる世界観に惹かれる。',
+      '多くの人が共感できる表現に魅力を感じる。',
+      '安心感のある世界観を大切にしたい。',
+    ],
+    description:
+      'あなたは、温かく親しみやすい世界観を持つクリエイターです。特別に派手な表現よりも、日常の中にある優しさや温もりを大切にする傾向があります。あなたの作品には安心感や人のぬくもりがあり、見る人の心をほっとさせる力があります。このタイプの人は「つながり」「日常」「共感」をテーマに心が温かくなる世界観を表現することが得意です。',
+    keywords: ['温もり', '共感', 'つながり', '安心感', '日常'],
+    colors: [
+      { name: 'ウォームベージュ', hex: '#f5e0c8' },
+      { name: 'キャメルブラウン', hex: '#c19a6b' },
+      { name: 'オリーブグリーン', hex: '#808000' },
+      { name: 'クリームホワイト', hex: '#fffdd0' },
+    ],
+    motifs: ['家', 'カフェ', '動物', '灯り', '温かい部屋'],
+    strength: '人の心を落ち着かせる温かさがあります。親しみやすい表現は多くの人に共感され、長く愛される作品になります。安心感を届ける世界観を作る才能です。',
+    suitable: ['ライフスタイル系ブランド', 'カフェ・暮らし系ビジュアル', '共感系SNSコンテンツ', '温かい世界観のデザイン'],
+    mapArea: '現実 / ライフスタイル',
+  },
+  {
+    id: 9,
+    num: '⑩',
+    en: 'Gentle Haven',
+    jp: 'ジェントルヘイブン（やさしい安らぎの場所）',
+    color1: '#c8b4d9',
+    color2: '#9b59b6',
+    accent: '#7c3aed',
+    questions: [
+      '優しく穏やかな雰囲気の作品に惹かれる。',
+      '見る人の心を落ち着かせる表現が好き。',
+      '癒しや安心感を感じる世界観が好き。',
+      '包み込むような優しい作品を作りたい。',
+    ],
+    description:
+      'あなたは、優しさと癒しに満ちた世界観を持つクリエイターです。静かで穏やかな雰囲気や、心が落ち着くような表現に惹かれることが多いでしょう。あなたの作品には柔らかな空気感があり、見る人の心をゆっくりと癒す力があります。このタイプの人は「安心」「癒し」「静けさ」をテーマに心を整える世界観を表現することが得意です。',
+    keywords: ['癒し', '静けさ', '安心', 'やさしさ', '調和'],
+    colors: [
+      { name: 'ペールラベンダー', hex: '#e6e6fa' },
+      { name: 'アイボリー', hex: '#fffff0' },
+      { name: 'ミストブルー', hex: '#b0c4de' },
+      { name: 'ソフトグレー', hex: '#d3d3d3' },
+    ],
+    motifs: ['光', '雲', '水', '花', '羽'],
+    strength: '人の心を整える力があります。穏やかな作品は見る人の気持ちを落ち着かせ、安心感や癒しを届ける存在になります。多くの人に必要とされる才能です。',
+    suitable: ['ヒーリング系ブランド', 'スピリチュアルビジュアル', '癒し系アート', '女性向けコンテンツ'],
+    mapArea: '癒し',
+  },
+  {
+    id: 10,
+    num: '⑪',
+    en: 'Noble Atelier',
+    jp: 'ノーブルアトリエ（上品で洗練された空間）',
+    color1: '#c5a028',
+    color2: '#8b6914',
+    accent: '#92400e',
+    questions: [
+      '洗練された上品なデザインに惹かれる。',
+      '高級感のある世界観に魅力を感じる。',
+      '完成度の高い美しい作品を作りたいと思う。',
+      'ブランド感のある表現に魅力を感じる。',
+    ],
+    description:
+      'あなたは、洗練された美しさと上品さを感じる世界観を持つクリエイターです。シンプルで整ったデザインや、高級感のある雰囲気に魅力を感じることが多いでしょう。あなたの作品には落ち着いた美しさと完成度があり、見る人に上質な印象を与えます。このタイプの人は「洗練」「美意識」「完成度」を大切にしながらブランドのような世界観を作ることが得意です。',
+    keywords: ['洗練', '上品', '高級感', '美意識', '完成度'],
+    colors: [
+      { name: 'アイボリー', hex: '#fffff0' },
+      { name: 'ベージュ', hex: '#f5f5dc' },
+      { name: 'ゴールド', hex: '#ffd700' },
+      { name: 'ダークブラウン', hex: '#4a2c0a' },
+    ],
+    motifs: ['アトリエ', 'アンティーク家具', '大理石', 'クラシック建築', '上質なインテリア'],
+    strength: '上質な美しさがあります。洗練されたビジュアルは見る人に信頼感や高級感を与え、ブランド価値を高める力を持っています。完成度の高い世界観を作る才能です。',
+    suitable: ['ブランドビジュアル', '美容・ファッション系', '高級感のあるデザイン', 'ラグジュアリーアート'],
+    mapArea: '現実 / ライフスタイル',
+  },
+  {
+    id: 11,
+    num: '⑫',
+    en: 'Visionary Studio',
+    jp: 'ビジョナリースタジオ（未来を創る世界）',
+    color1: '#00bfff',
+    color2: '#1a1a2e',
+    accent: '#0ea5e9',
+    questions: [
+      '新しいアイデアや独自の表現を考えるのが好き。',
+      '創造的な世界観を作ることに喜びを感じる。',
+      'オリジナルのスタイルを大切にしている。',
+      'アートとしての表現に強い興味がある。',
+    ],
+    description:
+      'あなたは、独創性と創造力にあふれた世界観を持つクリエイターです。既存のスタイルにとらわれるよりも、新しい発想や表現を生み出すことに強い魅力を感じます。あなたの作品にはオリジナリティとクリエイティブな発想があり、見る人に新しい視点や刺激を与える力があります。このタイプの人は「創造」「革新」「表現」をテーマに新しい世界観を生み出すことが得意です。',
+    keywords: ['創造', '独創性', 'アイデア', '表現', '革新'],
+    colors: [
+      { name: 'ネオンブルー', hex: '#00bfff' },
+      { name: 'マゼンタ', hex: '#ff00ff' },
+      { name: 'ディープブラック', hex: '#0a0a0a' },
+      { name: 'メタリックシルバー', hex: '#c0c0c0' },
+    ],
+    motifs: ['未来都市', '抽象デザイン', '光のライン', 'デジタルアート', 'クリエイティブ空間'],
+    strength: '新しいものを生み出す力があります。独創的な表現は見る人に強い印象を残し、新しい可能性を感じさせる作品になります。独自のスタイルを生み出す才能です。',
+    suitable: ['デジタルアート', '未来系ビジュアル', 'クリエイティブブランド', '新しい表現のアート'],
+    mapArea: 'エネルギー',
+  },
+];
+
+/* =============================================
+   STATE
+   ============================================= */
+let currentSection = 0;
+let scores = new Array(TYPES.length).fill(null).map(() => new Array(4).fill(0));
+
+/* =============================================
+   INIT
+   ============================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  // Build type preview chips
+  const preview = document.getElementById('type-preview');
+  TYPES.forEach(t => {
+    const chip = document.createElement('div');
+    chip.className = 'type-chip';
+    chip.style.background = `linear-gradient(135deg, ${t.color1}, ${t.color2})`;
+    chip.textContent = `${t.num} ${t.en}`;
+    preview.appendChild(chip);
+  });
+});
+
+/* =============================================
+   SCREEN NAVIGATION
+   ============================================= */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  el.classList.remove('animate-in');
+  void el.offsetWidth; // reflow
+  el.classList.add('animate-in');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showInstruction() {
+  showScreen('screen-instruction');
+}
+
+function startQuiz() {
+  currentSection = 0;
+  scores = new Array(TYPES.length).fill(null).map(() => new Array(4).fill(0));
+  renderSection();
+  showScreen('screen-quiz');
+}
+
+/* =============================================
+   QUIZ LOGIC
+   ============================================= */
+function renderSection() {
+  const type = TYPES[currentSection];
+  const total = TYPES.length;
+  const pct = (currentSection / total) * 100;
+
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('quiz-step').textContent = `${currentSection + 1} / ${total}`;
+
+  const tag = document.getElementById('type-tag');
+  tag.textContent = type.en;
+  tag.style.background = `linear-gradient(135deg, ${type.color1}, ${type.color2})`;
+
+  document.documentElement.style.setProperty('--type-color', type.color2);
+
+  const title = document.getElementById('section-title');
+  title.innerHTML = `<span class="type-en">${type.num} ${type.en}</span>${type.jp}`;
+
+  // Render questions
+  const wrap = document.getElementById('questions-wrap');
+  wrap.innerHTML = '';
+  type.questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.innerHTML = `
+      <div class="q-num">Q${qi + 1}</div>
+      <div class="question-text">${q}</div>
+      <div class="rating-row" id="rating-${qi}">
+        ${[1,2,3,4,5].map(v => `
+          <button class="rating-btn${scores[currentSection][qi] === v ? ' selected' : ''}"
+            onclick="rate(${qi}, ${v})" aria-label="${v}点">${v}</button>
+        `).join('')}
+      </div>
+      <div class="scale-hint">
+        <span>まったくそう思わない</span>
+        <span>とてもそう思う</span>
+      </div>
+    `;
+    wrap.appendChild(card);
+  });
+
+  // Next btn
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = currentSection === total - 1 ? '診断する ✦' : '次へ ▶';
+  nextBtn.disabled = !isCurrentSectionComplete();
+
+  // Back btn
+  document.getElementById('btn-back').style.display = currentSection === 0 ? 'none' : '';
+
+  updateNextBtn();
+}
+
+function rate(qIndex, value) {
+  scores[currentSection][qIndex] = value;
+  // Update buttons
+  const row = document.getElementById(`rating-${qIndex}`);
+  row.querySelectorAll('.rating-btn').forEach((btn, i) => {
+    btn.classList.toggle('selected', i + 1 === value);
+  });
+  updateNextBtn();
+}
+
+function isCurrentSectionComplete() {
+  return scores[currentSection].every(s => s > 0);
+}
+
+function updateNextBtn() {
+  document.getElementById('btn-next').disabled = !isCurrentSectionComplete();
+}
+
+function nextSection() {
+  if (!isCurrentSectionComplete()) return;
+  if (currentSection < TYPES.length - 1) {
+    currentSection++;
+    renderSection();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showCalc();
+  }
+}
+
+function prevSection() {
+  if (currentSection > 0) {
+    currentSection--;
+    renderSection();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+/* =============================================
+   CALC & RESULT
+   ============================================= */
+function showCalc() {
+  document.getElementById('progress-bar').style.width = '100%';
+  showScreen('screen-calc');
+  setTimeout(showResult, 1400);
+}
+
+function showResult() {
+  // Calculate totals
+  const totals = scores.map(s => s.reduce((a, b) => a + b, 0));
+  const maxScore = Math.max(...totals);
+  const winnerIdx = totals.indexOf(maxScore);
+  const winner = TYPES[winnerIdx];
+
+  const el = document.getElementById('screen-result');
+  el.innerHTML = `
+    <div class="result-header" style="
+      --result-bg1: ${winner.color1};
+      --result-bg2: ${winner.color2};
+    ">
+      <div class="result-label">YOUR TYPE</div>
+      <div class="result-type-num">${winner.num}</div>
+      <div class="result-type-name">${winner.en}</div>
+      <div class="result-type-jp">${winner.jp}</div>
+      <div class="result-score">スコア ${maxScore} / ${TYPES[0].questions.length * 5} 点</div>
+    </div>
+
+    <div class="result-card" style="--result-accent:${winner.accent}">
+      <h3>✦ 世界観の特徴</h3>
+      <p class="result-description">${winner.description}</p>
+    </div>
+
+    <div class="result-card" style="--result-accent:${winner.accent}">
+      <h3>✦ キーワード</h3>
+      <div class="keyword-list">
+        ${winner.keywords.map(k => `<span class="keyword-chip">${k}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="result-card" style="--result-accent:${winner.accent}">
+      <h3>✦ おすすめカラーパレット</h3>
+      <div class="color-swatches">
+        ${winner.colors.map(c => `
+          <div class="color-swatch">
+            <div class="swatch-dot" style="background:${c.hex};${c.hex === '#ffffff' || c.hex === '#fefefe' || c.hex === '#fffff0' || c.hex === '#fffdd0' || c.hex === '#fff44f' ? 'border:1.5px solid #e8e0d8' : ''}"></div>
+            <span>${c.name}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="result-card" style="--result-accent:${winner.accent}">
+      <h3>✦ AIアートモチーフ</h3>
+      <div class="motif-list">
+        ${winner.motifs.map(m => `<span class="motif-chip">${m}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="result-card" style="--result-accent:${winner.accent}">
+      <h3>✦ あなたの強み</h3>
+      <p class="result-description">${winner.strength}</p>
+    </div>
+
+    <div class="result-card" style="--result-accent:${winner.accent}">
+      <h3>✦ こんな人に向いている</h3>
+      <ul class="suitable-list">
+        ${winner.suitable.map(s => `<li>${s}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="scores-section">
+      <div style="font-size:.78rem;font-weight:700;letter-spacing:.1em;color:#aaa;margin-bottom:16px">ALL SCORES</div>
+      ${TYPES.map((t, i) => `
+        <div class="score-row">
+          <div class="score-label">${t.num} ${t.en}</div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-fill"
+              style="width:${(totals[i] / 20) * 100}%;background:linear-gradient(90deg,${t.color1},${t.color2})">
+            </div>
+          </div>
+          <div class="score-num">${totals[i]}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <button class="retry-btn" onclick="retryQuiz()">もう一度診断する</button>
+  `;
+
+  showScreen('screen-result');
+}
+
+function retryQuiz() {
+  currentSection = 0;
+  scores = new Array(TYPES.length).fill(null).map(() => new Array(4).fill(0));
+  document.getElementById('progress-bar').style.width = '0%';
+  showScreen('screen-intro');
+}
+</script>
+</body>
+</html>
