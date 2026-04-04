@@ -138,6 +138,21 @@
     }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(176,125,98,.5); }
     .btn-primary:active { transform: translateY(0); }
+    .privacy-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 10px;
+      max-width: 420px;
+      text-align: left;
+    }
+    .privacy-icon { font-size: 1rem; margin-top: 2px; flex-shrink: 0; }
+    .privacy-text { font-size: 0.72rem; color: #444; line-height: 1.7; }
+    .privacy-text strong { color: #222; font-size: 0.75rem; }
 
     /* ===== INSTRUCTION SCREEN ===== */
     #screen-instruction {
@@ -712,6 +727,15 @@
     </div>
     <div class="type-preview" id="type-preview"></div>
     <button class="btn-primary" onclick="showInstruction()">診断をはじめる</button>
+    <div class="privacy-note">
+      <span class="privacy-icon">🔒</span>
+      <div class="privacy-text">
+        <strong>プライバシーについて</strong><br>
+        このアプリは個人情報を一切収集していません。<br>
+        入力した回答・診断結果はブラウザ上にのみ表示され、<br>
+        外部への送信・保存は行いません。安心してお使いください。
+      </div>
+    </div>
   </div>
 
   <!-- ② INSTRUCTION SCREEN -->
