@@ -554,6 +554,106 @@
       flex: 0 0 28px;
       text-align: right;
     }
+    /* ===== TEASER CARD ===== */
+    .teaser-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .teaser-text {
+      font-size: .95rem;
+      line-height: 1.9;
+      color: #444;
+    }
+
+    /* ===== CTA CARD ===== */
+    .cta-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      border: 2px solid color-mix(in srgb, var(--cta-color, #b07d62) 20%, white);
+      text-align: center;
+    }
+    .cta-lock {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    .cta-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #2d2d2d;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+    .cta-items {
+      background: #faf8f5;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .cta-item {
+      font-size: .88rem;
+      color: #555;
+      line-height: 1.5;
+    }
+    .cta-item strong {
+      color: var(--cta-accent, #b07d62);
+    }
+    .cta-price-wrap {
+      margin-bottom: 18px;
+    }
+    .cta-sale-label {
+      font-size: .78rem;
+      font-weight: 700;
+      color: #e05a2b;
+      margin-bottom: 6px;
+      letter-spacing: .04em;
+    }
+    .cta-price {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 8px;
+    }
+    .cta-price-main {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #2d2d2d;
+    }
+    .cta-price-normal {
+      font-size: .82rem;
+      color: #aaa;
+      text-decoration: line-through;
+    }
+    .cta-btn {
+      display: block;
+      background: linear-gradient(135deg, var(--cta-color, #d4a574), color-mix(in srgb, var(--cta-color, #b07d62) 80%, #000));
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 16px 24px;
+      border-radius: 100px;
+      text-decoration: none;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 20px color-mix(in srgb, var(--cta-color, #b07d62) 35%, transparent);
+      transition: var(--transition);
+      letter-spacing: .03em;
+    }
+    .cta-btn:hover { transform: translateY(-2px); opacity: .92; }
+    .cta-note {
+      font-size: .75rem;
+      color: #bbb;
+      line-height: 1.6;
+    }
+
     .retry-btn {
       display: block;
       width: 100%;
@@ -699,6 +799,7 @@ const TYPES = [
     strength: '見る人の心を癒す力を持っています。安心感のある作品は、多くの人にとって「心が落ち着く場所」になります。その感性はとても価値のある才能です。',
     suitable: ['ヒーリング系アート', '癒し系ブランド', '女性向けデザイン', 'スピリチュアル系ビジュアル'],
     mapArea: '幻想 / ファンタジー',
+    teaser: '優しく透明感のある光の世界観を持つクリエイターです。\n見る人の心をそっと落ち着かせる、癒しの力があなたの才能です。',
   },
   {
     id: 1,
@@ -727,6 +828,7 @@ const TYPES = [
     strength: '静かな深みと知的な魅力があります。ただ美しいだけではなく、見る人が「意味」を感じられる作品は長く心に残る力を持っています。世界観を深く作り込むことができる才能です。',
     suitable: ['ストーリー性のあるアート', '知的ブランドのビジュアル', '書籍・教育コンテンツ', '世界観デザイン'],
     mapArea: '現実 / ライフスタイル',
+    teaser: '知性と物語の深みを持つクリエイターです。\n意味やメッセージを込めた作品で、見る人に新しい気づきと学びを与えます。',
   },
   {
     id: 2,
@@ -755,6 +857,7 @@ const TYPES = [
     strength: '広がりと自由なエネルギーがあります。あなたの作品を見る人は「新しい世界へ旅に出るような感覚」を感じます。この感性は、人の心を軽くし前向きな気持ちを生み出す力を持っています。',
     suitable: ['旅・自然系ビジュアル', 'ライフスタイルブランド', '自由な世界観アート', 'ストーリー性のある作品'],
     mapArea: '現実 / ライフスタイル',
+    teaser: '自由と広がりを感じさせる世界観を持つクリエイターです。\n枠にとらわれない表現で、見る人の心を解放し前向きにする力があります。',
   },
   {
     id: 3,
@@ -783,6 +886,7 @@ const TYPES = [
     strength: '人の記憶に残る強い魅力があります。他の人と同じ表現ではなく、あなたにしか作れない個性が自然と表れます。アートとしての存在感を生み出す大きな才能です。',
     suitable: ['アート系ビジュアル', 'ファンタジー作品', '世界観重視のブランド', '個性派デザイン'],
     mapArea: '幻想 / ファンタジー',
+    teaser: '強い個性とミステリアスな世界観を持つクリエイターです。\n独特の存在感と緊張感で、見る人の記憶に深く刻まれる作品を生み出します。',
   },
   {
     id: 4,
@@ -811,6 +915,7 @@ const TYPES = [
     strength: '人を惹きつける神秘的な魅力があります。幻想的な表現は、見る人の想像力を刺激し夢の世界へと引き込む力を持っています。独特で印象に残る世界観を作る才能です。',
     suitable: ['スピリチュアル系ビジュアル', 'オラクルカード・占い関連', '幻想アート', 'ヒーリング系ブランド'],
     mapArea: '幻想 / ファンタジー',
+    teaser: '神秘的で幻想的な世界観を持つクリエイターです。\n宇宙や光、見えない力をテーマに、見る人の想像力を大きく広げる力があります。',
   },
   {
     id: 5,
@@ -839,6 +944,7 @@ const TYPES = [
     strength: '人の心を動かすエネルギーがあります。力強いビジュアルは見る人の気持ちを前向きにし、勇気や希望を生み出す力を持っています。人に影響を与える作品を生み出す才能です。',
     suitable: ['モチベーション系ビジュアル', '力強い世界観のアート', 'ストーリー性のある作品', 'ブランドビジュアル'],
     mapArea: 'エネルギー',
+    teaser: '情熱とエネルギーに満ちた世界観を持つクリエイターです。\n力強いビジュアルで見る人に勇気と活力を与え、心を動かす作品を生み出します。',
   },
   {
     id: 6,
@@ -867,6 +973,7 @@ const TYPES = [
     strength: '人の心をときめかせる魅力があります。美しく優雅な表現は見る人の心を明るくし、幸せな気持ちを生み出す力を持っています。華やかで魅力的な世界観を生み出す才能です。',
     suitable: ['女性向けブランドビジュアル', 'ロマンティック系アート', 'ウェディング系デザイン', '美容・ライフスタイル系'],
     mapArea: '幻想 / ファンタジー',
+    teaser: '優雅でロマンティックな世界観を持つクリエイターです。\n花や柔らかな光の表現で、見る人の心をときめかせる華やかな作品を生み出します。',
   },
   {
     id: 7,
@@ -895,6 +1002,7 @@ const TYPES = [
     strength: '人を笑顔にする力があります。明るく楽しいビジュアルは見る人の気持ちを前向きにし、元気を与える作品になります。そのポジティブな感性は多くの人に愛される世界観を作る才能です。',
     suitable: ['ポップ系ブランド', 'キャラクターデザイン', 'キッズ向けビジュアル', 'SNSコンテンツ'],
     mapArea: 'エネルギー',
+    teaser: '明るく楽しい世界観を持つクリエイターです。\nカラフルで遊び心あふれる表現で、見る人の顔を自然と笑顔にします。',
   },
   {
     id: 8,
@@ -923,6 +1031,7 @@ const TYPES = [
     strength: '人の心を落ち着かせる温かさがあります。親しみやすい表現は多くの人に共感され、長く愛される作品になります。安心感を届ける世界観を作る才能です。',
     suitable: ['ライフスタイル系ブランド', 'カフェ・暮らし系ビジュアル', '共感系SNSコンテンツ', '温かい世界観のデザイン'],
     mapArea: '現実 / ライフスタイル',
+    teaser: '温かく親しみやすい世界観を持つクリエイターです。\n日常の優しさとぬくもりを大切にし、見る人の心をほっとさせる作品を生み出します。',
   },
   {
     id: 9,
@@ -951,6 +1060,7 @@ const TYPES = [
     strength: '人の心を整える力があります。穏やかな作品は見る人の気持ちを落ち着かせ、安心感や癒しを届ける存在になります。多くの人に必要とされる才能です。',
     suitable: ['ヒーリング系ブランド', 'スピリチュアルビジュアル', '癒し系アート', '女性向けコンテンツ'],
     mapArea: '癒し',
+    teaser: '優しさと癒しに満ちた世界観を持つクリエイターです。\n穏やかな表現で見る人の心をゆっくりと整え、安らぎを届ける才能があります。',
   },
   {
     id: 10,
@@ -979,6 +1089,7 @@ const TYPES = [
     strength: '上質な美しさがあります。洗練されたビジュアルは見る人に信頼感や高級感を与え、ブランド価値を高める力を持っています。完成度の高い世界観を作る才能です。',
     suitable: ['ブランドビジュアル', '美容・ファッション系', '高級感のあるデザイン', 'ラグジュアリーアート'],
     mapArea: '現実 / ライフスタイル',
+    teaser: '洗練された美しさと上品さを持つクリエイターです。\n完成度の高い表現で見る人に上質な印象を与え、ブランド価値を高める力があります。',
   },
   {
     id: 11,
@@ -1007,6 +1118,7 @@ const TYPES = [
     strength: '新しいものを生み出す力があります。独創的な表現は見る人に強い印象を残し、新しい可能性を感じさせる作品になります。独自のスタイルを生み出す才能です。',
     suitable: ['デジタルアート', '未来系ビジュアル', 'クリエイティブブランド', '新しい表現のアート'],
     mapArea: 'エネルギー',
+    teaser: '独創性と創造力にあふれた世界観を持つクリエイターです。\n新しい発想と表現で見る人に鮮烈な印象と、新たな可能性を感じさせます。',
   },
 ];
 
@@ -1175,47 +1287,24 @@ function showResult() {
       <div class="result-score">スコア ${maxScore} / ${TYPES[0].questions.length * 5} 点</div>
     </div>
 
-    <div class="result-card" style="--result-accent:${winner.accent}">
-      <h3>✦ 世界観の特徴</h3>
-      <p class="result-description">${winner.description}</p>
+    <div class="teaser-card" style="border-left: 4px solid ${winner.color2}">
+      <div class="teaser-text">${winner.teaser.replace(/\n/g, '<br>')}</div>
     </div>
 
-    <div class="result-card" style="--result-accent:${winner.accent}">
-      <h3>✦ キーワード</h3>
-      <div class="keyword-list">
-        ${winner.keywords.map(k => `<span class="keyword-chip">${k}</span>`).join('')}
+    <div class="cta-card" style="--cta-color:${winner.color2};--cta-accent:${winner.accent}">
+      <div class="cta-lock">🔒</div>
+      <div class="cta-title">あなたの世界観の詳細はセットで確認できます</div>
+      <div class="cta-items">
+        <div class="cta-item">✦ <strong>${winner.en}</strong> の世界観の特徴・強み</div>
+        <div class="cta-item">✦ おすすめカラーパレット（5色＋使い方）</div>
+        <div class="cta-item">✦ AIアートモチーフ＆プロンプト例</div>
+        <div class="cta-item">✦ 全12タイプの解説PDF</div>
+        <div class="cta-item">✦ 世界観カラーパレットBOOK</div>
       </div>
-    </div>
-
-    <div class="result-card" style="--result-accent:${winner.accent}">
-      <h3>✦ おすすめカラーパレット</h3>
-      <div class="color-swatches">
-        ${winner.colors.map(c => `
-          <div class="color-swatch">
-            <div class="swatch-dot" style="background:${c.hex};${c.hex === '#ffffff' || c.hex === '#fefefe' || c.hex === '#fffff0' || c.hex === '#fffdd0' || c.hex === '#fff44f' ? 'border:1.5px solid #e8e0d8' : ''}"></div>
-            <span>${c.name}</span>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-
-    <div class="result-card" style="--result-accent:${winner.accent}">
-      <h3>✦ AIアートモチーフ</h3>
-      <div class="motif-list">
-        ${winner.motifs.map(m => `<span class="motif-chip">${m}</span>`).join('')}
-      </div>
-    </div>
-
-    <div class="result-card" style="--result-accent:${winner.accent}">
-      <h3>✦ あなたの強み</h3>
-      <p class="result-description">${winner.strength}</p>
-    </div>
-
-    <div class="result-card" style="--result-accent:${winner.accent}">
-      <h3>✦ こんな人に向いている</h3>
-      <ul class="suitable-list">
-        ${winner.suitable.map(s => `<li>${s}</li>`).join('')}
-      </ul>
+      <a class="cta-btn" href="https://store.shopping.yahoo.co.jp/" target="_blank" rel="noopener">
+        詳細を見て購入する →
+      </a>
+      <div class="cta-note">診断アプリ＋解説PDF＋カラーパレットBOOKの3点セット</div>
     </div>
 
     <div class="scores-section">
