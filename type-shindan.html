@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>あなたのAIアート活用タイプ診断</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Noto+Sans+JP:wght@400;500;700&family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDEAE6;
+    --accent:#F7D6E0;
+    --accent-deep:#EBBDCD;
+    --text:#2C2420;
+    --radius:20px;
+    --shadow:0 10px 30px rgba(44,36,32,.08);
+    --ease:.4s cubic-bezier(.4,0,.2,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Noto Sans JP', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100%;
+  }
+  body{
+    display:flex;
+    justify-content:center;
+    padding:0 0 60px;
+  }
+  h1,h2,h3,.mincho{ font-family:'Shippori Mincho', serif; }
+  .en{ font-family:'Cormorant Garamond', serif; font-style:italic; }
+
+  #app{
+    width:100%;
+    max-width:480px;
+    min-height:100vh;
+    position:relative;
+    background:var(--bg);
+  }
+
+  .screen{
+    display:none;
+    padding:32px 24px 40px;
+    animation:fadeIn .5s var(--ease);
+  }
+  .screen.active{ display:block; }
+
+  @keyframes fadeIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ===== START SCREEN ===== */
+  #screen-start{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:.72rem;
+    letter-spacing:.25em;
+    color:#8a7a6f;
+    margin-bottom:14px;
+  }
+  #screen-start h1{
+    font-size:1.65rem;
+    line-height:1.6;
+    font-weight:800;
+    margin-bottom:16px;
+  }
+  #screen-start .sub{
+    font-size:.92rem;
+    line-height:1.9;
+    color:#5b5048;
+    margin-bottom:36px;
+  }
+  .start-visual{
+    width:120px;
+    height:120px;
+    margin:0 auto 32px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--accent), var(--accent-deep));
+    box-shadow:var(--shadow);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .start-visual span{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:1.1rem;
+    color:var(--text);
+  }
+  .btn-primary{
+    display:inline-block;
+    width:100%;
+    background:var(--accent-deep);
+    color:var(--text);
+    border:none;
+    border-radius:999px;
+    padding:18px 20px;
+    font-size:1rem;
+    font-weight:700;
+    letter-spacing:.05em;
+    font-family:'Noto Sans JP', sans-serif;
+    cursor:pointer;
+    box-shadow:var(--shadow);
+    transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+    text-decoration:none;
+    text-align:center;
+  }
+  .btn-primary:active{ transform:scale(.97); }
+  .time-note{
+    margin-top:18px;
+    font-size:.78rem;
+    color:#8a7a6f;
+    letter-spacing:.04em;
+  }
+
+  /* ===== QUIZ SCREEN ===== */
+  #progress-track{
+    width:100%;
+    height:6px;
+    border-radius:999px;
+    background:#ffffff;
+    overflow:hidden;
+    margin-bottom:10px;
+  }
+  #progress-fill{
+    height:100%;
+    width:20%;
+    background:var(--accent);
+    border-radius:999px;
+    transition:width .4s var(--ease);
+  }
+  #progress-label{
+    font-size:.75rem;
+    color:#8a7a6f;
+    text-align:right;
+    letter-spacing:.05em;
+    margin-bottom:28px;
+  }
+  .q-number{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    color:var(--accent-deep);
+    font-size:1rem;
+    margin-bottom:10px;
+    letter-spacing:.05em;
+  }
+  .q-text{
+    font-size:1.15rem;
+    line-height:1.75;
+    font-weight:700;
+    margin-bottom:28px;
+  }
+  .choices{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .choice-btn{
+    text-align:left;
+    background:#fff;
+    border:1px solid #e3ddd6;
+    border-radius:16px;
+    padding:16px 18px;
+    font-size:.9rem;
+    line-height:1.7;
+    color:var(--text);
+    cursor:pointer;
+    transition:border-color .25s var(--ease), background .25s var(--ease), transform .15s var(--ease);
+  }
+  .choice-btn:hover{ border-color:var(--accent-deep); background:#fffaf9; }
+  .choice-btn:active{ transform:scale(.98); }
+  .choice-letter{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:var(--accent);
+    font-size:.72rem;
+    font-weight:700;
+    margin-right:10px;
+    flex:none;
+  }
+
+  /* ===== RESULT SCREEN ===== */
+  .result-eyebrow{
+    text-align:center;
+    font-size:.75rem;
+    letter-spacing:.2em;
+    color:#8a7a6f;
+    margin-bottom:10px;
+  }
+  .result-type-name{
+    text-align:center;
+    font-size:1.7rem;
+    font-weight:800;
+    line-height:1.5;
+    margin-bottom:12px;
+  }
+  .result-catch{
+    text-align:center;
+    font-size:1rem;
+    font-weight:700;
+    color:#6b453f;
+    margin-bottom:20px;
+    line-height:1.7;
+  }
+  .result-desc{
+    font-size:.9rem;
+    line-height:1.95;
+    color:#4a4038;
+    background:#fff;
+    border-radius:var(--radius);
+    padding:22px;
+    box-shadow:var(--shadow);
+    margin-bottom:28px;
+  }
+  .section-title{
+    font-size:.95rem;
+    font-weight:700;
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section-title::before{
+    content:"";
+    width:4px;
+    height:16px;
+    background:var(--accent-deep);
+    border-radius:2px;
+    display:inline-block;
+  }
+  .palette-wrap{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .swatch{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+  }
+  .swatch-color{
+    width:100%;
+    aspect-ratio:1/1;
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    transition:transform .2s var(--ease);
+  }
+  .swatch:active .swatch-color{ transform:scale(.92); }
+  .swatch-hex{
+    font-size:.62rem;
+    color:#6b5f55;
+    letter-spacing:.02em;
+    font-family:'Cormorant Garamond', serif;
+  }
+  .palette-note{
+    text-align:center;
+    font-size:.7rem;
+    color:#a3958a;
+    margin-bottom:32px;
+  }
+  .future-list{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:32px;
+  }
+  .future-list li{
+    background:#fff;
+    border-radius:14px;
+    padding:16px 18px;
+    font-size:.86rem;
+    line-height:1.7;
+    box-shadow:var(--shadow);
+    position:relative;
+    padding-left:38px;
+  }
+  .future-list li::before{
+    content:"✦";
+    position:absolute;
+    left:16px;
+    top:16px;
+    color:var(--accent-deep);
+    font-size:.85rem;
+  }
+  .cta-group{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:36px;
+  }
+  .line-block{
+    background:#fff;
+    border-radius:var(--radius);
+    padding:24px 20px;
+    text-align:center;
+    box-shadow:var(--shadow);
+    margin-bottom:24px;
+  }
+  .line-block p{
+    font-size:.82rem;
+    line-height:1.8;
+    color:#4a4038;
+    margin-bottom:18px;
+  }
+  .btn-line{
+    display:inline-block;
+    width:100%;
+    background:#06C755;
+    color:#fff;
+    border-radius:999px;
+    padding:16px;
+    font-size:.92rem;
+    font-weight:700;
+    text-decoration:none;
+    letter-spacing:.03em;
+  }
+  .retry-link{
+    display:block;
+    text-align:center;
+    font-size:.78rem;
+    color:#8a7a6f;
+    text-decoration:underline;
+    margin-top:8px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    width:100%;
+    padding:8px;
+  }
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:30px;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--text);
+    color:#fff;
+    padding:10px 20px;
+    border-radius:999px;
+    font-size:.78rem;
+    letter-spacing:.04em;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s var(--ease), transform .3s var(--ease);
+    z-index:200;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== 画面1：スタート ===== -->
+  <section id="screen-start" class="screen active">
+    <div class="eyebrow en">AI ART TYPE DIAGNOSIS</div>
+    <div class="start-visual"><span>Art</span></div>
+    <h1>あなたにぴったりのAIアートの<br>始め方、見つかります</h1>
+    <p class="sub">5つの質問に答えるだけで、<br>あなたの活用タイプと次の一歩がわかります</p>
+    <button class="btn-primary" id="btn-start">診断スタート</button>
+    <p class="time-note">所要時間の目安：約2分</p>
+  </section>
+
+  <!-- ===== 画面2：質問フロー ===== -->
+  <section id="screen-quiz" class="screen">
+    <div id="progress-track"><div id="progress-fill"></div></div>
+    <div id="progress-label"></div>
+    <div class="q-number en" id="q-number"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="choices" id="q-choices"></div>
+  </section>
+
+  <!-- ===== 画面3：結果 ===== -->
+  <section id="screen-result" class="screen">
+    <div class="result-eyebrow en">YOUR RESULT</div>
+    <div class="result-type-name" id="r-name"></div>
+    <div class="result-catch" id="r-catch"></div>
+    <div class="result-desc" id="r-desc"></div>
+
+    <div class="section-title">あなたにおすすめのカラーパレット</div>
+    <div class="palette-wrap" id="r-palette"></div>
+    <div class="palette-note">スウォッチをタップするとHEXコードをコピーできます</div>
+
+    <div class="section-title">こんな未来が待っています</div>
+    <ul class="future-list" id="r-future"></ul>
+
+    <div class="section-title">おすすめレッスン・アイテム</div>
+    <div class="cta-group" id="r-cta"></div>
+
+    <div class="line-block">
+      <p>もっと詳しく知りたい方・レッスンについて相談したい方はLINEへ</p>
+      <a class="btn-line" href="https://lin.ee/t4MCrLv" target="_blank" rel="noopener">LINEで相談する</a>
+    </div>
+
+    <button class="retry-link" id="btn-retry">もう一度診断する</button>
+  </section>
+
+</div>
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {
+      text: "AIアートに興味を持ったきっかけは？",
+      choices: [
+        { letter:"A", label:"インスタやSNSで素敵な作品を見て、自分も作ってみたくなった" },
+        { letter:"B", label:"自分のビジネスや発信のビジュアルをもっとおしゃれにしたい" },
+        { letter:"C", label:"副業や新しい収入の柱として可能性を感じた" },
+        { letter:"D", label:"すでにAIアートを使っているが、もっと自分らしい世界観を作りたい" }
+      ]
+    },
+    {
+      text: "今のAIアートへの経験値は？",
+      choices: [
+        { letter:"A", label:"まったくの初めて・何も触ったことがない" },
+        { letter:"B", label:"ChatGPTなどで少し試したが、思うような画像が作れなかった" },
+        { letter:"C", label:"Midjourneyを使ったことがある" },
+        { letter:"D", label:"Midjourneyを使って作品を作っているが、スタイルが定まらない" }
+      ]
+    },
+    {
+      text: "AIアートで作れるようになったら、一番やってみたいことは？",
+      choices: [
+        { letter:"A", label:"自分だけの好きな世界観の作品を作って楽しみたい" },
+        { letter:"B", label:"SNS投稿やサービスのバナー・アイコンなどに使いたい" },
+        { letter:"C", label:"作品を販売したり、講師活動などに活かしたい" },
+        { letter:"D", label:"ブランドカラーや世界観をAIアートで可視化・整理したい" }
+      ]
+    },
+    {
+      text: "AIアートを学ぶ上で一番不安なことは？",
+      choices: [
+        { letter:"A", label:"自分にセンスや技術がなくてもできるか不安" },
+        { letter:"B", label:"何に使えるか、活用イメージが持てない" },
+        { letter:"C", label:"時間やお金をかける価値があるか分からない" },
+        { letter:"D", label:"技術よりも「自分らしさ」の表現方法が分からない" }
+      ]
+    },
+    {
+      text: "理想のAIアートとの付き合い方は？",
+      choices: [
+        { letter:"A", label:"趣味として、気ままに楽しみたい" },
+        { letter:"B", label:"今やっているビジネスや発信の質を上げるために使いたい" },
+        { letter:"C", label:"AIアートを軸に新しい仕事や収入を作りたい" },
+        { letter:"D", label:"自分のブランドや世界観をより深めるために使いたい" }
+      ]
+    }
+  ];
+
+  const TYPES = {
+    A: {
+      name: "趣味クリエイタータイプ",
+      catch: "感性のままに、あなただけの世界を作ろう",
+      desc: "AIアートは、絵心やデザインの知識がなくても、あなたの“好き”をそのまま形にできるツールです。まずは難しく考えず、自分の好きな世界観を自由に楽しむところから始めてみませんか？",
+      palette: ["#F5EFE8","#F7D6E0","#E8C5C5","#C9A9A6","#9E7B7B"],
+      future: [
+        "自分の好みど真ん中の作品が作れるようになる",
+        "インスタに投稿したくなる素敵な画像が生まれる",
+        "「これ自分で作ったの？」と驚かれる体験ができる"
+      ],
+      ctas: [
+        { label:"Level1〜3レッスンを見てみる", url:"https://msmskdesignworks.my.canva.site/lp" }
+      ]
+    },
+    B: {
+      name: "ブランディング活用タイプ",
+      catch: "発信のビジュアルが変わると、集まるお客様が変わる",
+      desc: "ビジネスや発信に使うビジュアルは、あなたの第一印象を決める大切な要素です。AIアートを活用することで、プロに頼まなくても自分のブランドイメージに合った画像を自在に作れるようになります。",
+      palette: ["#EDEAE6","#F7D6E0","#EBBDCD","#C4A4B0","#8B7078"],
+      future: [
+        "SNS投稿・アイコン・バナーが自分の世界観で統一される",
+        "ブランドカラーに合ったオリジナル画像が量産できる",
+        "「センスいい」と言われる発信ができるようになる"
+      ],
+      ctas: [
+        { label:"世界観カラーパレットGPTsを見てみる", url:"https://canva-mskdesign33.stores.jp/items/6a31c56952c94ac1b1a907b2" },
+        { label:"Level1〜4レッスンを見てみる", url:"https://msmskdesignworks.my.canva.site/lp" }
+      ]
+    },
+    C: {
+      name: "副業・収益化タイプ",
+      catch: "AIアートを、新しい収入の柱に",
+      desc: "AIアートはスキルとして確立できれば、アイコン制作・パッケージデザイン・講師活動など、多様な収益化の道が開けます。まずは基礎から体系的に学び、自分の強みと掛け合わせた働き方を目指しましょう。",
+      palette: ["#EDE8E3","#D4C5BC","#C2A99E","#9E8278","#6B5651"],
+      future: [
+        "AIアートのスキルを活かした副業・受注ができる",
+        "講師や認定インストラクターとして活動の幅が広がる",
+        "好きなことを仕事にする新しいキャリアが生まれる"
+      ],
+      ctas: [
+        { label:"Level1〜6フルコースを見てみる", url:"https://msmskdesignworks.my.canva.site/lp" }
+      ]
+    },
+    D: {
+      name: "世界観迷子タイプ",
+      catch: "技術はある。あとは“あなたらしさ”を言語化するだけ",
+      desc: "AIアートのスキルはすでに持っている。でも、作品の雰囲気がバラバラだったり、自分の世界観が定まらなくてモヤモヤしていませんか？あなたに必要なのは、技術ではなく“自分の軸”の言語化です。",
+      palette: ["#F0EBE8","#E8D5CC","#DBBFB5","#C4A090","#A07868"],
+      future: [
+        "自分のブランドカラーと世界観がはっきり言葉になる",
+        "作品に統一感が生まれ、「あなたらしい」と言われるようになる",
+        "世界観を軸にしたサービス・発信に自信が持てる"
+      ],
+      ctas: [
+        { label:"世界観カラーパレットGPTsを見てみる", url:"https://canva-mskdesign33.stores.jp/items/6a31c56952c94ac1b1a907b2" },
+        { label:"世界観デザイン診断セットを見てみる", url:"https://canva-mskdesign33.stores.jp/items/69d18dd4bd9ebeef6f5df417" }
+      ]
+    }
+  };
+
+  const screenStart = document.getElementById('screen-start');
+  const screenQuiz = document.getElementById('screen-quiz');
+  const screenResult = document.getElementById('screen-result');
+
+  let currentIndex = 0;
+  let answers = []; // array of letters
+
+  function showScreen(el){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+    window.scrollTo(0,0);
+  }
+
+  document.getElementById('btn-start').addEventListener('click', () => {
+    currentIndex = 0;
+    answers = [];
+    renderQuestion();
+    showScreen(screenQuiz);
+  });
+
+  document.getElementById('btn-retry').addEventListener('click', () => {
+    currentIndex = 0;
+    answers = [];
+    showScreen(screenStart);
+  });
+
+  function renderQuestion(){
+    const q = QUESTIONS[currentIndex];
+    const total = QUESTIONS.length;
+    document.getElementById('progress-fill').style.width = ((currentIndex + 1) / total * 100) + '%';
+    document.getElementById('progress-label').textContent = (currentIndex + 1) + ' / ' + total;
+    document.getElementById('q-number').textContent = 'Question ' + (currentIndex + 1);
+    document.getElementById('q-text').textContent = q.text;
+
+    const wrap = document.getElementById('q-choices');
+    wrap.innerHTML = '';
+    q.choices.forEach(choice => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerHTML = '<span class="choice-letter">' + choice.letter + '</span>' + choice.label;
+      btn.addEventListener('click', () => selectChoice(choice.letter));
+      wrap.appendChild(btn);
+    });
+
+    screenQuiz.style.animation = 'none';
+    void screenQuiz.offsetWidth;
+    screenQuiz.style.animation = '';
+  }
+
+  function selectChoice(letter){
+    answers.push(letter);
+    if (currentIndex < QUESTIONS.length - 1){
+      currentIndex++;
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function determineType(){
+    const scores = { A:0, B:0, C:0, D:0 };
+    answers.forEach(l => scores[l]++);
+    let maxScore = -1;
+    let winners = [];
+    Object.keys(scores).forEach(letter => {
+      if (scores[letter] > maxScore){
+        maxScore = scores[letter];
+        winners = [letter];
+      } else if (scores[letter] === maxScore){
+        winners.push(letter);
+      }
+    });
+    if (winners.length === 1) return winners[0];
+    return answers[0]; // Q1の回答を優先
+  }
+
+  function showResult(){
+    const letter = determineType();
+    const type = TYPES[letter];
+
+    document.getElementById('r-name').textContent = type.name;
+    document.getElementById('r-catch').textContent = type.catch;
+    document.getElementById('r-desc').textContent = type.desc;
+
+    const paletteWrap = document.getElementById('r-palette');
+    paletteWrap.innerHTML = '';
+    type.palette.forEach(hex => {
+      const sw = document.createElement('div');
+      sw.className = 'swatch';
+      sw.innerHTML = '<div class="swatch-color" style="background:' + hex + '"></div><div class="swatch-hex">' + hex + '</div>';
+      sw.addEventListener('click', () => copyHex(hex));
+      paletteWrap.appendChild(sw);
+    });
+
+    const futureList = document.getElementById('r-future');
+    futureList.innerHTML = '';
+    type.future.forEach(f => {
+      const li = document.createElement('li');
+      li.textContent = f;
+      futureList.appendChild(li);
+    });
+
+    const ctaGroup = document.getElementById('r-cta');
+    ctaGroup.innerHTML = '';
+    type.ctas.forEach(cta => {
+      const a = document.createElement('a');
+      a.className = 'btn-primary';
+      a.href = cta.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = cta.label;
+      ctaGroup.appendChild(a);
+    });
+
+    showScreen(screenResult);
+  }
+
+  function copyHex(hex){
+    const toast = document.getElementById('toast');
+    const done = () => {
+      toast.textContent = hex + ' をコピーしました';
+      toast.classList.add('show');
+      clearTimeout(copyHex._t);
+      copyHex._t = setTimeout(() => toast.classList.remove('show'), 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(hex).then(done).catch(done);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = hex;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch(e) {}
+      document.body.removeChild(ta);
+      done();
+    }
+  }
+})();
+</script>
+</body>
+</html>
