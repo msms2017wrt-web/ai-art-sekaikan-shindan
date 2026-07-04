@@ -472,7 +472,11 @@
       name: "趣味クリエイタータイプ",
       catch: "感性のままに、あなただけの世界を作ろう",
       desc: "AIアートは、絵心やデザインの知識がなくても、あなたの“好き”をそのまま形にできるツールです。まずは難しく考えず、自分の好きな世界観を自由に楽しむところから始めてみませんか？",
-      palette: ["#F5EFE8","#F7D6E0","#E8C5C5","#C9A9A6","#9E7B7B"],
+      palettes: [
+        ["#F5EFE8","#F7D6E0","#E8C5C5","#C9A9A6","#9E7B7B"],
+        ["#FAF3EE","#FBE1E7","#F0D0D5","#D8B4B0","#B08A83"],
+        ["#F2ECE4","#F6D8DE","#E4BFC4","#C39B9C","#8F6C6A"]
+      ],
       future: [
         "自分の好みど真ん中の作品が作れるようになる",
         "インスタに投稿したくなる素敵な画像が生まれる",
@@ -486,7 +490,11 @@
       name: "ブランディング活用タイプ",
       catch: "発信のビジュアルが変わると、集まるお客様が変わる",
       desc: "ビジネスや発信に使うビジュアルは、あなたの第一印象を決める大切な要素です。AIアートを活用することで、プロに頼まなくても自分のブランドイメージに合った画像を自在に作れるようになります。",
-      palette: ["#EDEAE6","#F7D6E0","#EBBDCD","#C4A4B0","#8B7078"],
+      palettes: [
+        ["#EDEAE6","#F7D6E0","#EBBDCD","#C4A4B0","#8B7078"],
+        ["#F0EDE9","#F5D2DE","#E7B7C8","#BC9BA8","#7C636B"],
+        ["#EAE6E2","#F8DCE6","#EEC3D2","#CBA9B5","#927883"]
+      ],
       future: [
         "SNS投稿・アイコン・バナーが自分の世界観で統一される",
         "ブランドカラーに合ったオリジナル画像が量産できる",
@@ -501,7 +509,11 @@
       name: "副業・収益化タイプ",
       catch: "AIアートを、新しい収入の柱に",
       desc: "AIアートはスキルとして確立できれば、アイコン制作・パッケージデザイン・講師活動など、多様な収益化の道が開けます。まずは基礎から体系的に学び、自分の強みと掛け合わせた働き方を目指しましょう。",
-      palette: ["#EDE8E3","#D4C5BC","#C2A99E","#9E8278","#6B5651"],
+      palettes: [
+        ["#EDE8E3","#D4C5BC","#C2A99E","#9E8278","#6B5651"],
+        ["#F1ECE6","#DACBBF","#C7AC9C","#A78873","#715A4E"],
+        ["#E9E3DC","#D0C0B4","#BCA090","#967A6C","#5F4A45"]
+      ],
       future: [
         "AIアートのスキルを活かした副業・受注ができる",
         "講師や認定インストラクターとして活動の幅が広がる",
@@ -515,7 +527,11 @@
       name: "世界観迷子タイプ",
       catch: "技術はある。あとは“あなたらしさ”を言語化するだけ",
       desc: "AIアートのスキルはすでに持っている。でも、作品の雰囲気がバラバラだったり、自分の世界観が定まらなくてモヤモヤしていませんか？あなたに必要なのは、技術ではなく“自分の軸”の言語化です。",
-      palette: ["#F0EBE8","#E8D5CC","#DBBFB5","#C4A090","#A07868"],
+      palettes: [
+        ["#F0EBE8","#E8D5CC","#DBBFB5","#C4A090","#A07868"],
+        ["#F2ECE7","#EAD2C4","#D9B7A7","#BC9481","#8C6552"],
+        ["#EEE7E2","#E4CFC9","#D2B4AC","#B18E85","#7A5A52"]
+      ],
       future: [
         "自分のブランドカラーと世界観がはっきり言葉になる",
         "作品に統一感が生まれ、「あなたらしい」と言われるようになる",
@@ -615,9 +631,10 @@
     document.getElementById('r-catch').textContent = type.catch;
     document.getElementById('r-desc').textContent = type.desc;
 
+    const palette = type.palettes[Math.floor(Math.random() * type.palettes.length)];
     const paletteWrap = document.getElementById('r-palette');
     paletteWrap.innerHTML = '';
-    type.palette.forEach(hex => {
+    palette.forEach(hex => {
       const sw = document.createElement('div');
       sw.className = 'swatch';
       sw.innerHTML = '<div class="swatch-color" style="background:' + hex + '"></div><div class="swatch-hex">' + hex + '</div>';
