@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSK Design Works | AIアート体験レッスン</title>
+<meta name="description" content="言葉にできない「好き」を、色とAIアートで形にする。MSK Design Worksの体験レッスン。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;600;800&family=Noto+Sans+JP:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F3EF;
+    --cream-deep:#F0EAE3;
+    --ink:#2C2420;
+    --ink-soft:#4A3F3A;
+    --rose-soft:#F7D6E0;
+    --rose-mid:#EBBDCD;
+    --rose-deep:#C97B92;
+    --rose-deeper:#B25D78;
+    --mauve:#8B6F72;
+    --gold:#C9A66B;
+    --line:rgba(44,36,32,0.12);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Noto Sans JP',sans-serif;
+    font-weight:300;
+    line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{
+    font-family:'Shippori Mincho B1',serif;
+    font-weight:600;
+    margin:0;
+    color:var(--ink);
+    letter-spacing:0.02em;
+  }
+  .eyebrow{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-weight:500;
+    letter-spacing:0.14em;
+    color:var(--rose-deeper);
+    font-size:clamp(13px,1.6vw,16px);
+    display:inline-block;
+    margin-bottom:14px;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+  section{position:relative;}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 28px;
+    background:rgba(247,243,239,0);
+    transition:background .4s ease, box-shadow .4s ease, padding .4s ease;
+  }
+  .nav.scrolled{
+    background:rgba(247,243,239,0.92);
+    backdrop-filter:blur(10px);
+    box-shadow:0 1px 0 var(--line);
+    padding:12px 28px;
+  }
+  .nav-logo{
+    font-family:'Shippori Mincho B1',serif;
+    font-size:17px;
+    letter-spacing:0.08em;
+  }
+  .nav-cta{
+    font-family:'Noto Sans JP',sans-serif;
+    font-size:12.5px;
+    letter-spacing:0.05em;
+    border:1px solid var(--ink);
+    padding:9px 18px;
+    border-radius:999px;
+    transition:all .3s ease;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{background:var(--ink);color:var(--cream);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    align-items:center;
+    padding:140px 24px 100px;
+    position:relative;
+    overflow:hidden;
+  }
+  .blob{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(60px);
+    opacity:.55;
+    z-index:0;
+  }
+  .blob1{width:480px;height:480px;background:var(--rose-soft);top:-160px;right:-120px;}
+  .blob2{width:360px;height:360px;background:var(--rose-mid);bottom:-140px;left:-100px;opacity:.4;}
+  .blob3{width:220px;height:220px;background:var(--gold);top:40%;right:8%;opacity:.18;}
+
+  .hero-inner{position:relative;z-index:1;max-width:760px;margin:0 auto;text-align:center;}
+  .hero h1{
+    font-size:clamp(32px,5.2vw,54px);
+    line-height:1.5;
+    margin-bottom:26px;
+  }
+  .hero h1 .accent{color:var(--rose-deeper);}
+  .hero p.lead{
+    font-size:clamp(14.5px,1.8vw,17px);
+    color:var(--ink-soft);
+    max-width:520px;
+    margin:0 auto 40px;
+  }
+  .btn-primary{
+    display:inline-block;
+    background:var(--rose-deep);
+    color:#fff;
+    font-family:'Noto Sans JP',sans-serif;
+    font-size:15px;
+    letter-spacing:0.04em;
+    padding:17px 42px;
+    border-radius:999px;
+    box-shadow:0 10px 30px -10px rgba(201,122,146,.6);
+    transition:transform .3s ease, box-shadow .3s ease, background .3s ease;
+  }
+  .btn-primary:hover{
+    transform:translateY(-2px);
+    background:var(--rose-deeper);
+    box-shadow:0 14px 36px -10px rgba(201,122,146,.7);
+  }
+  .btn-sub{
+    display:block;
+    margin-top:16px;
+    font-size:12.5px;
+    color:var(--mauve);
+    letter-spacing:.03em;
+  }
+  .scroll-cue{
+    position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+    font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--mauve);
+    font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px;
+    animation:floaty 2.6s ease-in-out infinite;
+  }
+  .scroll-cue .line{width:1px;height:34px;background:var(--mauve);opacity:.5;}
+  @keyframes floaty{0%,100%{transform:translate(-50%,0);}50%{transform:translate(-50%,8px);}}
+
+  .hero-art{
+    margin-top:56px;
+    max-width:640px;
+    margin-left:auto;margin-right:auto;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 30px 60px -24px rgba(44,36,32,.35);
+    position:relative;
+    aspect-ratio:16/9;
+    background:linear-gradient(160deg,var(--rose-soft),var(--rose-mid));
+  }
+  .hero-art img{width:100%;height:100%;object-fit:cover;display:block;}
+  .hero-art .img-missing-note{
+    display:none;position:absolute;inset:0;align-items:center;justify-content:center;
+    text-align:center;padding:20px;font-size:13px;color:#fff;
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+  }
+  .hero-art.img-missing img{display:none;}
+  .hero-art.img-missing .img-missing-note{display:flex;}
+
+  .works{padding:100px 0 60px;}
+  .works-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .work-item{
+    aspect-ratio:1/1;border-radius:10px;overflow:hidden;position:relative;
+    background:linear-gradient(150deg,var(--rose-soft),var(--cream-deep));
+  }
+  .work-item img{width:100%;height:100%;object-fit:cover;display:block;}
+  .work-item .img-missing-note{
+    display:none;position:absolute;inset:0;align-items:center;justify-content:center;
+    text-align:center;padding:10px;font-size:11.5px;color:var(--mauve);
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+  }
+  .work-item.img-missing img{display:none;}
+  .work-item.img-missing .img-missing-note{display:flex;}
+  @media (max-width:640px){.works-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* ---------- GENERIC SECTION HEAD ---------- */
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 56px;}
+  .sec-head h2{font-size:clamp(24px,3.4vw,34px);line-height:1.6;}
+  .hr-gold{
+    width:46px;height:1px;background:var(--gold);margin:22px auto 0;
+  }
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease, transform .8s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ---------- ABOUT / DIFFERENTIATION ---------- */
+  .about{padding:130px 0 100px;}
+  .about-grid{
+    max-width:640px;margin:0 auto;text-align:center;
+  }
+  .about-copy p{color:var(--ink-soft);font-size:15px;margin:0 0 18px;}
+  .about-copy .role{
+    font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--rose-deeper);
+    font-size:15px;margin-bottom:6px;
+  }
+  .about-copy h3{font-size:24px;margin-bottom:22px;}
+  .diff-item{text-align:left;}
+
+  .diff-list{margin-top:32px;display:flex;flex-direction:column;gap:22px;}
+  .diff-item{display:flex;gap:16px;align-items:flex-start;}
+  .diff-num{
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    color:var(--gold);font-size:22px;line-height:1;min-width:28px;
+  }
+  .diff-item h4{font-family:'Shippori Mincho B1',serif;font-size:16.5px;font-weight:600;margin:0 0 6px;}
+  .diff-item p{font-size:14px;color:var(--ink-soft);margin:0;}
+
+  /* ---------- PALETTE REVEAL (SIGNATURE) ---------- */
+  .palette-sec{
+    padding:110px 0;
+    background:var(--cream-deep);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .chip-row{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-bottom:56px;
+  }
+  .chip{
+    font-family:'Noto Sans JP',sans-serif;
+    font-size:13.5px;
+    padding:11px 22px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:#fff;
+    cursor:pointer;
+    transition:all .3s ease;
+    color:var(--ink-soft);
+  }
+  .chip:hover{border-color:var(--rose-deep);color:var(--rose-deeper);}
+  .chip.active{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+  }
+  .palette-stage{
+    display:flex;flex-direction:column;align-items:center;gap:28px;
+    min-height:220px;
+  }
+  .swatch-row{display:flex;gap:14px;}
+  .swatch{
+    width:64px;height:64px;border-radius:10px;
+    box-shadow:0 8px 22px -10px rgba(44,36,32,.25);
+    transform:scale(.85);opacity:0;
+    transition:transform .55s cubic-bezier(.2,.8,.2,1), opacity .55s ease;
+  }
+  .swatch.show{transform:scale(1);opacity:1;}
+  .palette-caption{
+    text-align:center;max-width:480px;
+  }
+  .palette-caption .hex-line{
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    color:var(--mauve);font-size:14px;letter-spacing:.04em;margin-bottom:10px;
+  }
+  .palette-caption p{font-size:14.5px;color:var(--ink-soft);margin:0;}
+  .palette-hint{
+    text-align:center;margin-top:44px;font-size:13px;color:var(--mauve);
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+  }
+
+  /* ---------- USE-CASES ---------- */
+  .cases{padding:120px 0;}
+  .case-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+  }
+  .case-card{
+    background:#fff;border:1px solid var(--line);border-radius:10px;
+    padding:30px 20px;text-align:center;
+    transition:transform .35s ease, box-shadow .35s ease;
+  }
+  .case-card:hover{transform:translateY(-6px);box-shadow:0 18px 34px -18px rgba(44,36,32,.25);}
+  .case-card .ic{font-size:26px;margin-bottom:14px;display:block;}
+  .case-card h4{font-family:'Shippori Mincho B1',serif;font-size:14.5px;font-weight:600;margin:0 0 8px;}
+  .case-card p{font-size:12.5px;color:var(--mauve);margin:0;line-height:1.6;}
+
+  /* ---------- PATH CARDS (やりたいこと) ---------- */
+  .paths{padding:120px 0;background:var(--cream-deep);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .path-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .path-card{
+    background:#fff;border-radius:12px;border:1px solid var(--line);
+    padding:30px 28px;cursor:pointer;position:relative;overflow:hidden;
+  }
+  .path-card .pt-top{display:flex;gap:14px;align-items:flex-start;}
+  .path-card .ic{font-size:22px;}
+  .path-card h4{font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:600;margin:0 0 6px;}
+  .path-card .want{font-size:13px;color:var(--mauve);margin:0;}
+  .path-future{
+    margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);
+    font-size:13px;color:var(--ink-soft);
+    max-height:0;opacity:0;overflow:hidden;
+    transition:max-height .5s ease, opacity .5s ease, margin-top .5s ease, padding-top .5s ease;
+  }
+  .path-card.open .path-future{max-height:200px;opacity:1;}
+  .path-future .arrow{color:var(--rose-deeper);margin-right:6px;}
+  .path-card .tap-hint{
+    position:absolute;top:22px;right:24px;font-size:11px;color:var(--mauve);
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+  }
+
+  /* ---------- VOICE ---------- */
+  .voice{padding:120px 0;}
+  .voice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .voice-card{
+    background:#fff;border:1px solid var(--line);border-radius:12px;padding:30px 26px;
+    display:flex;flex-direction:column;gap:16px;
+  }
+  .voice-tag{
+    font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--rose-deeper);
+    font-size:13px;
+  }
+  .voice-card p{font-size:13.5px;color:var(--ink-soft);margin:0;flex:1;}
+  .voice-card p strong{color:var(--ink);font-weight:500;}
+
+  /* ---------- LEVELS / PRICE ---------- */
+  .levels{padding:120px 0;background:var(--cream-deep);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .level-table{max-width:560px;margin:0 auto;}
+  .level-row{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 0;border-bottom:1px solid var(--line);
+    font-size:14.5px;
+  }
+  .level-row:last-child{border-bottom:none;}
+  .level-badge{
+    font-family:'Shippori Mincho B1',serif;font-size:13.5px;
+    border:1px solid var(--rose-deep);color:var(--rose-deeper);
+    border-radius:999px;padding:5px 16px;min-width:78px;text-align:center;
+  }
+  .level-name{flex:1;margin-left:18px;color:var(--ink-soft);font-size:13.5px;}
+  .level-price{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:17px;}
+  .level-note{text-align:center;font-size:12px;color:var(--mauve);margin-top:20px;}
+
+  /* ---------- CLOSING CTA ---------- */
+  .closing{padding:140px 0 130px;text-align:center;position:relative;overflow:hidden;}
+  .closing .blob{opacity:.35;}
+  .offer-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:#fff;border:1px solid var(--rose-deep);color:var(--rose-deeper);
+    padding:10px 24px;border-radius:999px;font-size:13.5px;margin-bottom:28px;
+  }
+  .closing h2{font-size:clamp(24px,3.6vw,36px);line-height:1.6;max-width:640px;margin:0 auto 18px;position:relative;z-index:1;}
+  .closing p.sub{color:var(--ink-soft);font-size:14.5px;max-width:460px;margin:0 auto 40px;position:relative;z-index:1;}
+  .apply-box{
+    position:relative;z-index:1;
+    max-width:420px;margin:0 auto;background:#fff;border:1px solid var(--line);
+    border-radius:14px;padding:34px 30px;box-shadow:0 24px 60px -30px rgba(44,36,32,.3);
+  }
+  .apply-box p{font-size:13px;color:var(--ink-soft);margin:0 0 22px;}
+  .apply-steps{text-align:left;font-size:13px;color:var(--ink-soft);margin:0 0 26px;padding-left:0;list-style:none;}
+  .apply-steps li{display:flex;gap:10px;margin-bottom:10px;}
+  .apply-steps li .n{
+    font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--rose-deeper);min-width:16px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:50px 24px;text-align:center;border-top:1px solid var(--line);}
+  footer .flogo{font-family:'Shippori Mincho B1',serif;font-size:16px;margin-bottom:14px;}
+  footer .flinks{display:flex;justify-content:center;gap:22px;margin-bottom:18px;font-size:13px;color:var(--mauve);}
+  footer .copyright{font-size:11.5px;color:var(--mauve);opacity:.7;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:860px){
+    .case-grid{grid-template-columns:repeat(2,1fr);}
+    .path-grid{grid-template-columns:1fr;}
+    .voice-grid{grid-template-columns:1fr;}
+    .swatch{width:52px;height:52px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-logo">MSK Design Works</div>
+  <a class="nav-cta" href="https://forms.gle/dvwntZGrxY1dXiVM9" target="_blank" rel="noopener">体験レッスンに申し込む</a>
+</nav>
+
+<section class="hero">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+  <div class="hero-inner">
+    <span class="eyebrow">Color Palette × World View Branding</span>
+    <h1>言葉にできない<span class="accent">「好き」</span>を、<br>AIアートで形にする。</h1>
+    <p class="lead">「好みはあるのに、うまく言葉にできない」——<br>そんなあなたの世界観の原石を、45分の体験レッスンで一緒に見つけます。</p>
+    <a class="btn-primary" href="https://forms.gle/dvwntZGrxY1dXiVM9" target="_blank" rel="noopener">体験レッスンに申し込む</a>
+    <span class="btn-sub">Midjourney × AI Art｜オンライン開催</span>
+
+    <div class="hero-art">
+      <img src="tt01.png" alt="Misakoが制作したAIアート作品" onerror="this.parentElement.classList.add('img-missing')">
+      <div class="img-missing-note">ここにMisakoさんのAIアート作品が入ります</div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>scroll</span><span class="line"></span></div>
+</section>
+
+<section class="about">
+  <div class="wrap">
+    <div class="about-grid reveal">
+      <div class="about-copy">
+        <div class="role">AI Art × World View Branding Instructor</div>
+        <h3>Misako</h3>
+        <p>レッスンでは、あなたの中にある「言葉にできなかった好み」を、色とプロンプトを通してやさしく形にしていくことを大切にしています。</p>
+
+        <div class="diff-list">
+          <div class="diff-item">
+            <span class="diff-num">01</span>
+            <div><h4>色×言語化メソッド</h4><p>「なんとなく好き」を色とキーワードに分解し、再現可能なプロンプトへ変換する独自メソッド。</p></div>
+          </div>
+          <div class="diff-item">
+            <span class="diff-num">02</span>
+            <div><h4>作って終わりじゃない</h4><p>デザイン制作だけでなく、SNS発信・商品化まで寄り添いながらサポートします。</p></div>
+          </div>
+          <div class="diff-item">
+            <span class="diff-num">03</span>
+            <div><h4>世界観の一貫性設計</h4><p>単発の1枚絵ではなく、ブランド全体としての世界観を設計します。</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="works">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Works</span>
+      <h2>AI Art Gallery</h2>
+      <div class="hr-gold"></div>
+    </div>
+    <div class="works-grid reveal">
+      <div class="work-item"><img src="2.png" alt="AIアート作品1" onerror="this.parentElement.classList.add('img-missing')"><div class="img-missing-note">作品画像</div></div>
+      <div class="work-item"><img src="3.png" alt="AIアート作品2" onerror="this.parentElement.classList.add('img-missing')"><div class="img-missing-note">作品画像</div></div>
+      <div class="work-item"><img src="4.png" alt="AIアート作品3" onerror="this.parentElement.classList.add('img-missing')"><div class="img-missing-note">作品画像</div></div>
+      <div class="work-item"><img src="5.png" alt="AIアート作品4" onerror="this.parentElement.classList.add('img-missing')"><div class="img-missing-note">作品画像</div></div>
+      <div class="work-item"><img src="6.png" alt="AIアート作品5" onerror="this.parentElement.classList.add('img-missing')"><div class="img-missing-note">作品画像</div></div>
+      <div class="work-item"><img src="7.png" alt="AIアート作品6" onerror="this.parentElement.classList.add('img-missing')"><div class="img-missing-note">作品画像</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="palette-sec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Try it yourself</span>
+      <h2>あなたの「なんとなく好き」、<br>色にしてみませんか。</h2>
+      <div class="hr-gold"></div>
+    </div>
+
+    <div class="chip-row" id="chipRow">
+      <div class="chip active" data-key="kawaii">なんとなく可愛い</div>
+      <div class="chip" data-key="calm">落ち着いた感じ</div>
+      <div class="chip" data-key="elegant">上品な感じ</div>
+      <div class="chip" data-key="nostalgic">ノスタルジック</div>
+    </div>
+
+    <div class="palette-stage">
+      <div class="swatch-row" id="swatchRow"></div>
+      <div class="palette-caption">
+        <div class="hex-line" id="hexLine"></div>
+        <p id="paletteDesc"></p>
+      </div>
+    </div>
+
+    <div class="palette-hint">体験レッスンでは、あなたが選んだテーマ・雰囲気・カラーからその場でAIアートを生成します。ここではその感覚の一部を先取り体験できます</div>
+  </div>
+</section>
+
+<section class="cases">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">What you can create</span>
+      <h2>AIアートで広がる活用法</h2>
+      <div class="hr-gold"></div>
+    </div>
+    <div class="case-grid reveal">
+      <div class="case-card"><span class="ic">🌸</span><h4>SNS投稿</h4><p>Instagram / Threads<br>ブログの世界観づくり</p></div>
+      <div class="case-card"><span class="ic">🖼️</span><h4>デザイン素材</h4><p>サムネイル・背景画像<br>バナー制作</p></div>
+      <div class="case-card"><span class="ic">💌</span><h4>デジタル販売</h4><p>スマホ壁紙<br>テンプレート素材</p></div>
+      <div class="case-card"><span class="ic">🪞</span><h4>SNSアイコン</h4><p>オラクルカード<br>コラージュ素材</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="paths">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Choose your path</span>
+      <h2>あなたは、どれが気になりますか？</h2>
+      <div class="hr-gold"></div>
+    </div>
+    <div class="path-grid reveal" id="pathGrid">
+      <div class="path-card">
+        <span class="tap-hint">tap</span>
+        <div class="pt-top"><span class="ic">🌸</span><div><h4>SNS発信を強化したい</h4><p class="want">世界観のある投稿でフォロワーの反応を変えたい</p></div></div>
+        <div class="path-future"><span class="arrow">→</span>世界観が統一された発信に変わり、プロフィールへの流入・フォロー率がアップします。</div>
+      </div>
+      <div class="path-card">
+        <span class="tap-hint">tap</span>
+        <div class="pt-top"><span class="ic">🎨</span><div><h4>自分のブランド・世界観を作りたい</h4><p class="want">好きなものを言葉と色で形にしたい</p></div></div>
+        <div class="path-future"><span class="arrow">→</span>「なんとなく好き」が「これが私の世界観です」と言えるものに変わります。</div>
+      </div>
+      <div class="path-card">
+        <span class="tap-hint">tap</span>
+        <div class="pt-top"><span class="ic">💰</span><div><h4>デジタル商品を作って販売したい</h4><p class="want">壁紙やテンプレートを商品化したい</p></div></div>
+        <div class="path-future"><span class="arrow">→</span>1枚の絵ではなく"シリーズ"として作れるようになり、商品価値がアップします。</div>
+      </div>
+      <div class="path-card">
+        <span class="tap-hint">tap</span>
+        <div class="pt-top"><span class="ic">🖥️</span><div><h4>AIアートを仕事に取り入れたい</h4><p class="want">サムネやバナー制作を効率化したい</p></div></div>
+        <div class="path-future"><span class="arrow">→</span>欲しい素材をその場で作れるようになり、業務効率化・コスト削減につながります。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="voice">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Voices</span>
+      <h2>受講生の声</h2>
+      <div class="hr-gold"></div>
+    </div>
+    <div class="voice-grid reveal">
+      <div class="voice-card">
+        <div class="voice-tag">レベル1受講生 / A様</div>
+        <p>丁寧に説明してくださってとても分かりやすかったです。私にできるかなと不安だったAI画像作成ですが、<strong>Midjourneyで作れそうな気がしてきました。</strong></p>
+      </div>
+      <div class="voice-card">
+        <div class="voice-tag">レベル1〜6修了生 / R様</div>
+        <p>いままで自分の世界観を表現する方法がわからず、そもそも自分の世界観はおかしいのでは？とも思っていましたが、少しずつ形にしてみると<strong>自己肯定感と少し自信</strong>が付いたように感じています。</p>
+      </div>
+      <div class="voice-card">
+        <div class="voice-tag">レベル6受講生 / A様</div>
+        <p>好きな作品が作れるようになったら、<strong>世界観設計講座や売れるテーマ講座</strong>なども受講してみたいと思っています。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="closing" id="apply">
+  <div class="blob blob1" style="top:-100px;left:-140px;right:auto;"></div>
+  <div class="blob blob2" style="bottom:-160px;right:-100px;left:auto;"></div>
+  <div class="wrap reveal">
+    <h2>今日から、あなたの世界観を<br>育てていきませんか？</h2>
+    <p class="sub">「まずは形にしてみたい」と思った今の気持ちを、そのまま行動に変えるチャンスです。</p>
+
+    <div class="apply-box">
+      <ul class="apply-steps">
+        <li><span class="n">01</span>下の申込フォームに必要事項を入力</li>
+        <li><span class="n">02</span>送信後、詳細のご案内が届きます</li>
+      </ul>
+      <a class="btn-primary" href="https://forms.gle/dvwntZGrxY1dXiVM9" target="_blank" rel="noopener" style="width:100%;text-align:center;">申込フォームへ進む</a>
+      <p style="margin-top:18px;">ご質問・ご不明点は<a href="https://line.me/R/ti/p/@007zrlui?oat_content=url&amp;ts=12230957" target="_blank" rel="noopener" style="color:var(--rose-deeper);text-decoration:underline;">公式LINE</a>からお気軽にどうぞ。</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="flogo">MSK Design Works</div>
+  <div class="flinks">
+    <a href="https://www.instagram.com/msk.design.works/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.threads.com/@msk.design.works" target="_blank" rel="noopener">Threads</a>
+    <a href="https://line.me/R/ti/p/@007zrlui?oat_content=url&amp;ts=12230957" target="_blank" rel="noopener">LINE公式</a>
+  </div>
+  <div class="copyright">© 2026 MSK Design Works. All rights reserved.</div>
+</footer>
+
+<script>
+  // Nav scroll state
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+  }, {threshold:0.15});
+  revealEls.forEach(el => io.observe(el));
+
+  // Palette reveal signature interaction
+  const palettes = {
+    kawaii: {
+      colors: ['#F7D6E0','#F3B8C9','#FFF3E9','#E9A6B8'],
+      desc: '甘さの中に透明感を残した、やわらかいピンクの重なり。'
+    },
+    calm: {
+      colors: ['#DCD3C8','#B9AA9A','#EFE9E0','#8B7E6E'],
+      desc: '彩度を抑えたベージュとグレージュで、静けさを表現。'
+    },
+    elegant: {
+      colors: ['#7C93AA','#B9C9D6','#2F3E4E','#DCE4E9'],
+      desc: '澄んだブルーグレーの重なりが生む、静かな品のよさ。'
+    },
+    nostalgic: {
+      colors: ['#C9A66B','#A9714F','#EADFC8','#6B4A38'],
+      desc: '色あせた写真のような、セピアとテラコッタの余韻。'
+    }
+  };
+
+  const swatchRow = document.getElementById('swatchRow');
+  const hexLine = document.getElementById('hexLine');
+  const paletteDesc = document.getElementById('paletteDesc');
+  const chips = document.querySelectorAll('.chip');
+
+  function renderPalette(key){
+    const p = palettes[key];
+    swatchRow.innerHTML = '';
+    p.colors.forEach((c,i) => {
+      const sw = document.createElement('div');
+      sw.className = 'swatch';
+      sw.style.background = c;
+      swatchRow.appendChild(sw);
+      setTimeout(() => sw.classList.add('show'), 80 * i);
+    });
+    hexLine.textContent = p.colors.join('  ·  ');
+    paletteDesc.textContent = p.desc;
+  }
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      renderPalette(chip.dataset.key);
+    });
+  });
+  renderPalette('kawaii');
+
+  // Path cards toggle
+  document.querySelectorAll('.path-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const wasOpen = card.classList.contains('open');
+      document.querySelectorAll('.path-card').forEach(c => c.classList.remove('open'));
+      if(!wasOpen) card.classList.add('open');
+    });
+  });
+</script>
+
+</body>
+</html>
